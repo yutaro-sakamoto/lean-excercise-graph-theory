@@ -46,3 +46,125 @@ def example_simple_graph : SimpleGraph (example_vertecies) :=
     symm := example_adj_symm,
     noLoop := example_no_loop
   }
+
+def list_to_graph : {V : Type u} → List (V × V) → SimpleGraph V := sorry
+
+def example_adj2 : Nat → Nat → Prop
+  | 1, 2 => True
+  | 2, 1 => True
+  | 1, 3 => True
+  | 3, 1 => True
+  | _, _ => False
+
+lemma example_adj_symm2_3 : ∀ a, ∀ b : Nat, example_adj2 a b = example_adj2 b a := by
+  intro a b
+  by_cases h1 : a = 1
+  · subst h1
+    by_cases h2 : b = 2
+    · subst h2
+      simp [example_adj2]
+    · by_cases h3 : b = 3
+      · subst h3
+        simp [example_adj2]
+      · simp [example_adj2, h2, h3]
+  · by_cases h2 : a = 2
+    · subst h2
+      by_cases h3 : b = 1
+      · subst h3
+        simp [example_adj2]
+      · simp [example_adj2, h3]
+    · by_cases h3 : a = 3
+      · subst h3
+        by_cases h4 : b = 1
+        subst h4
+        · simp [example_adj2]
+        simp [example_adj2, h4]
+      · simp [example_adj2, h1, h2, h3]
+
+lemma example_adj_symm2_2 : ∀ a, ∀ b : Nat, example_adj2 a b = example_adj2 b a := by
+  intro a b
+  -- 最もシンプルな方法：重要なケースだけ場合分け
+  by_cases h1 : a = 1
+  · subst h1
+    by_cases h2 : b = 2
+    · subst h2; simp [example_adj2]  -- 1,2 = 2,1
+    · by_cases h3 : b = 3
+      · subst h3; simp [example_adj2]  -- 1,3 = 3,1
+      · simp [example_adj2, h2, h3]  -- その他は False = False
+  · by_cases h2 : a = 2
+    · subst h2
+      by_cases h3 : b = 1
+      · subst h3; simp [example_adj2]  -- 2,1 = 1,2
+      · simp [example_adj2, h3]  -- その他は False = False
+    · by_cases h3 : a = 3
+      · subst h3
+        by_cases h4 : b = 1
+        · subst h4; simp [example_adj2]  -- 3,1 = 1,3
+        · simp [example_adj2, h4]  -- その他は False = False
+      · simp [example_adj2, h1, h2, h3]  -- a ≠ 1,2,3 なら常に False = False
+
+lemma example_adj_symm2 : ∀ a, ∀ b : Nat, example_adj2 a b = example_adj2 b a := by
+  intro a b
+  -- 重要なケースのみ具体的に証明
+  cases a with
+  | zero =>
+    cases b with
+    | zero => simp [example_adj2]
+    | succ _ => simp [example_adj2]
+  | succ a' =>
+    cases a' with
+    | zero => -- a = 1
+      cases b with
+      | zero => simp [example_adj2]
+      | succ b' =>
+        cases b' with
+        | zero => simp [example_adj2]  -- 1, 1
+        | succ b'' =>
+          cases b'' with
+          | zero => simp [example_adj2]  -- 1, 2: True = True
+          | succ b''' =>
+            cases b''' with
+            | zero => simp [example_adj2]  -- 1, 3: True = True
+            | succ _ => simp [example_adj2]  -- 1, n≥4: False = False
+    | succ a'' =>
+      cases a'' with
+      | zero => -- a = 2
+        cases b with
+        | zero => simp [example_adj2]
+        | succ b' =>
+          cases b' with
+          | zero => simp [example_adj2]  -- 2, 1: True = True
+          | succ _ => simp [example_adj2]  -- 2, n≥2: False = False
+      | succ a''' =>
+        cases a''' with
+        | zero => -- a = 3
+          cases b with
+          | zero => simp [example_adj2]
+          | succ b' =>
+            cases b' with
+            | zero => simp [example_adj2]
+            | succ _ => simp [example_adj2]
+        | succ _ =>
+          cases b with
+          | zero => simp [example_adj2]
+          | succ _ =>
+            simp [example_adj2]
+
+lemma example_adj_symm2_4 : ∀ a, ∀ b : Nat, example_adj2 a b = example_adj2 b a := by
+  intro a b
+  by_cases a_eq_1 : a = 1
+  · subst a_eq_1
+    by_cases b_eq_2 : b = 2; · subst b_eq_2; simp [example_adj2, *]
+    by_cases b_eq_3 : b = 3; · subst b_eq_3; simp [example_adj2, *]
+    simp [example_adj2, *]
+  by_cases a_eq_2 : a = 2
+  · subst a_eq_2
+    by_cases b_eq_1 : b = 1; · subst b_eq_1; simp [example_adj2, *]
+    by_cases b_eq_3 : b = 3; · subst b_eq_3; simp [example_adj2, *]
+    simp [example_adj2, *]
+  by_cases a_eq_3 : a = 3
+  · subst a_eq_3
+    by_cases b_eq_1 : b = 1; · subst b_eq_1; simp [example_adj2, *]
+    by_cases b_eq_2 : b = 2; · subst b_eq_2; simp [example_adj2, *]
+    simp [example_adj2, *]
+  simp [example_adj2, *]
