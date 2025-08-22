@@ -219,3 +219,14 @@ lemma list_to_adj_symm {V : Type u} [DecidableEq V] (lst : List (V × V))
     · rw [if_pos h, if_pos (h_symm.mp h)]
     · rw [if_neg h, if_neg (h_symm.not.mp h)]
       exact ih
+
+def filter_loop_pairs {V : Type u} [DecidableEq V] (lst : List (V × V)) : List (V × V) :=
+  match lst with
+  | [] => []
+  | (x, y) :: xs =>
+    if x = y
+      then filter_loop_pairs xs
+      else (x, y) :: filter_loop_pairs xs
+
+theorem filter_loop_pairs_no_loop {V : Type u} [DecidableEq V] (lst : List (V × V)) :
+  ∀ a : V, ¬ list_to_adj (filter_loop_pairs lst) a a := sorry
