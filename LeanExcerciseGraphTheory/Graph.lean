@@ -192,12 +192,9 @@ lemma list_to_adj_symm2 {V : Type u} [DecidableEq V] (lst : List (V × V))
   | nil => simp [list_to_adj]
   | cons x xs ih =>
     simp [list_to_adj, ih]
-    apply Iff.intro
-    · intro h₁ h₂ h₃
-      apply h₁ <;> assumption
-    · intro h₁ h₂ h₃
-      apply h₁ <;> assumption
-
+    apply Iff.intro <;>
+    · intro h _ _
+      apply h <;> assumption
 
 lemma list_to_adj_symm {V : Type u} [DecidableEq V] (lst : List (V × V))
     : ∀ a, ∀ b : V, list_to_adj lst a b = list_to_adj lst b a := by
