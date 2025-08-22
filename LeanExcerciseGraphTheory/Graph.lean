@@ -168,3 +168,57 @@ lemma example_adj_symm2_4 : ∀ a, ∀ b : Nat, example_adj2 a b = example_adj2 
     by_cases b_eq_2 : b = 2; · subst b_eq_2; simp [example_adj2, *]
     simp [example_adj2, *]
   simp [example_adj2, *]
+
+def list_to_adj {V : Type u} [DecidableEq V] (lst : List (V × V)) : (V → V → Prop) :=
+  match lst with
+  | [] => fun _ _ => False
+  | (x, y)::xs => fun a b =>
+    if (x = a ∧ y = b) ∨ (x = b ∧ y = a)
+      then True
+      else list_to_adj xs a b
+
+--lemma list_to_adj_symm {V : Type u} [DecidableEq V] (lst : List (V × V))
+--    : ∀ a, ∀ b : V, list_to_adj lst a b = list_to_adj lst b a :=
+--  fun a =>
+--  fun b =>
+--    match lst with
+--    | [] => by simp [list_to_adj]
+--    | x::xs => sorry
+
+lemma list_to_adj_symm2 {V : Type u} [DecidableEq V] (lst : List (V × V))
+    : ∀ a, ∀ b : V, list_to_adj lst a b = list_to_adj lst b a := by
+  intro a b
+  induction lst with
+  | nil => simp [list_to_adj]
+  | cons x xs ih =>
+    simp [list_to_adj, ih]
+    apply Iff.intro
+    · intro h₁ h₂ h₃
+      apply h₁ <;> assumption
+    · intro h₁ h₂ h₃
+      apply h₁ <;> assumption
+
+
+lemma list_to_adj_symm {V : Type u} [DecidableEq V] (lst : List (V × V))
+    : ∀ a, ∀ b : V, list_to_adj lst a b = list_to_adj lst b a := by
+  intro a b
+  induction lst with
+  | nil => simp [list_to_adj]
+  | cons x xs ih =>
+    simp only [list_to_adj]
+    -- 条件式の対称性を利用
+    have h_symm : (x.1 = a ∧ x.2 = b) ∨ (x.1 = b ∧ x.2 = a) ↔
+                  (x.1 = b ∧ x.2 = a) ∨ (x.1 = a ∧ x.2 = b) := by
+      constructor
+      · intro h
+        cases h with
+        | inl h => exact Or.inr h
+        | inr h => exact Or.inl h
+      · intro h
+        cases h with
+        | inl h => exact Or.inr h
+        | inr h => exact Or.inl h
+    by_cases h : (x.1 = a ∧ x.2 = b) ∨ (x.1 = b ∧ x.2 = a)
+    · rw [if_pos h, if_pos (h_symm.mp h)]
+    · rw [if_neg h, if_neg (h_symm.not.mp h)]
+      exact ih
