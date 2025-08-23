@@ -229,4 +229,19 @@ def filter_loop_pairs {V : Type u} [DecidableEq V] (lst : List (V × V)) : List 
       else (x, y) :: filter_loop_pairs xs
 
 theorem filter_loop_pairs_no_loop {V : Type u} [DecidableEq V] (lst : List (V × V)) :
-  ∀ a : V, ¬ list_to_adj (filter_loop_pairs lst) a a := sorry
+  ∀ a : V, ¬ list_to_adj (filter_loop_pairs lst) a a := by
+  intro x
+  induction lst with
+  | nil => simp [filter_loop_pairs, list_to_adj]
+  | cons y ys ih =>
+    simp [filter_loop_pairs]
+    by_cases h : y.1 = y.2
+    · simp [h]
+      assumption
+    · simp [h, list_to_adj]
+      apply And.intro
+      · intro g
+        simp [Eq.symm g]
+        intro s
+        exact absurd (Eq.symm s) h
+      assumption
