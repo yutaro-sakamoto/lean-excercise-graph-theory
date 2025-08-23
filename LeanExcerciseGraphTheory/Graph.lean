@@ -255,3 +255,21 @@ def simple_graph_from_list {V : Type u} [DecidableEq V] (lst : List (V × V))
   }
 
 def sample_simple_graph : SimpleGraph Nat := simple_graph_from_list [(1, 2), (1, 3), (2, 4)]
+
+def vertices_3 : Finset Nat := {1, 2, 3}
+def set_vertices_3 := {x // x ∈ vertices_3}
+
+-- より直接的な方法で DecidableEq インスタンスを定義
+instance : DecidableEq set_vertices_3 := fun a b =>
+  if h : a.val = b.val then
+    isTrue (Subtype.ext h)
+  else
+    isFalse (fun heq => h (congrArg Subtype.val heq))
+
+-- 方法2: サブタイプを使用して vertices_3 の要素として定義
+def sample_complete_graph : SimpleGraph set_vertices_3 :=
+  simple_graph_from_list [
+    (⟨1, by simp [vertices_3]⟩, ⟨2, by simp [vertices_3]⟩),
+    (⟨1, by simp [vertices_3]⟩, ⟨3, by simp [vertices_3]⟩),
+    (⟨2, by simp [vertices_3]⟩, ⟨3, by simp [vertices_3]⟩)
+  ]
