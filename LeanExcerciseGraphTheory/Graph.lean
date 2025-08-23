@@ -245,3 +245,13 @@ theorem filter_loop_pairs_no_loop {V : Type u} [DecidableEq V] (lst : List (V ×
         intro s
         exact absurd (Eq.symm s) h
       assumption
+
+def simple_graph_from_list {V : Type u} [DecidableEq V] (lst : List (V × V))
+    : SimpleGraph V :=
+  {
+    adj := list_to_adj (filter_loop_pairs lst),
+    symm := list_to_adj_symm2 (filter_loop_pairs lst),
+    noLoop := filter_loop_pairs_no_loop lst
+  }
+
+def sample_simple_graph : SimpleGraph Nat := simple_graph_from_list [(1, 2), (1, 3), (2, 4)]
