@@ -1,5 +1,6 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Defs
+import Mathlib.Data.ZMod.Basic
 
 universe u
 class Graph' (V : Type u) where
@@ -273,3 +274,9 @@ def sample_complete_graph : SimpleGraph set_vertices_3 :=
     (⟨1, by simp [vertices_3]⟩, ⟨3, by simp [vertices_3]⟩),
     (⟨2, by simp [vertices_3]⟩, ⟨3, by simp [vertices_3]⟩)
   ]
+
+def valid_params (n t : Nat) : Prop :=
+  n > 1 && t > 0 && t < n
+
+def all_vertices (n t : Nat) (h : valid_params n t) : Finite (Nat × ZMod n) :=
+  sorry
