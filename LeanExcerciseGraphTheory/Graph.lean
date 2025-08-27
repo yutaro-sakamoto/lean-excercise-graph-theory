@@ -283,3 +283,7 @@ def all_vertices (n t : Nat) (_ : valid_params n t) : Finset (Nat × ZMod n) := 
         (Finset.range t).image (fun i : Nat => ((1 : Nat), (i : ZMod n))) ∪
         (Finset.range t).image (fun i : Nat => ((2 : Nat), (i : ZMod n))) ∪
         (Finset.range t).image (fun i : Nat => ((3 : Nat), (i : ZMod n)))
+
+variable (n : Nat)
+variable (t : Nat)
+variable (h : valid_params n t)
