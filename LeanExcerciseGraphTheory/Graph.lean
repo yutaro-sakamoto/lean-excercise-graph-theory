@@ -278,12 +278,61 @@ def sample_complete_graph : SimpleGraph set_vertices_3 :=
 def valid_params (n t : Nat) : Prop :=
   n > 1 && t > 0 && t < n
 
-def all_vertices (n t : Nat) (_ : valid_params n t) : Finset (Nat × ZMod n) := by
-  exact (Finset.range t).image (fun i : Nat => ((0 : Nat), (i : ZMod n))) ∪
-        (Finset.range t).image (fun i : Nat => ((1 : Nat), (i : ZMod n))) ∪
-        (Finset.range t).image (fun i : Nat => ((2 : Nat), (i : ZMod n))) ∪
-        (Finset.range t).image (fun i : Nat => ((3 : Nat), (i : ZMod n)))
-
 variable (n : Nat)
 variable (t : Nat)
-variable (h : valid_params n t)
+variable (h₁ : n > 1)
+variable (h₂ : t > 0)
+variable (h₃ : t < n)
+
+def all_vertices : Finset (Nat × ZMod n) := by
+  exact (Finset.range n).image (fun i : Nat => ((0 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((1 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((2 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((3 : Nat), (i : ZMod n)))
+
+def vertices := {x // x ∈ all_vertices n}
+
+def n_neq_zero : n ≠ 0 := by
+  intro h
+  rw [h] at h₁
+  contradiction
+
+def x (i : ZMod n) : vertices n := by
+  -- (0, i) が all_vertices に含まれることを示す
+  use (0, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def y (i : ZMod n) : vertices n := by
+  -- (0, i) が all_vertices に含まれることを示す
+  use (1, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def u (i : ZMod n) : vertices n := by
+  -- (0, i) が all_vertices に含まれることを示す
+  use (2, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def v (i : ZMod n) : vertices n := by
+  -- (0, i) が all_vertices に含まれることを示す
+  use (3, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
