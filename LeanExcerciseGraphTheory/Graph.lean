@@ -336,3 +336,6 @@ def v (i : ZMod n) : vertices n := by
   have : NeZero n := ⟨n_ne_zero⟩
   use i.val, i.val_lt
   simp
+
+def edges : List (vertices n × vertices n) :=
+  []
