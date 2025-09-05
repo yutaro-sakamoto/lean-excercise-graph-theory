@@ -297,7 +297,7 @@ def n_neq_zero : n ≠ 0 := by
   rw [h] at h₁
   contradiction
 
-def x (i : ZMod n) : vertices n := by
+def xx (i : ZMod n) : vertices n := by
   -- (0, i) が all_vertices に含まれることを示す
   use (0, i)
   simp [all_vertices]
@@ -307,8 +307,8 @@ def x (i : ZMod n) : vertices n := by
   use i.val, i.val_lt
   simp
 
-def y (i : ZMod n) : vertices n := by
-  -- (0, i) が all_vertices に含まれることを示す
+def yy (i : ZMod n) : vertices n := by
+  -- (1, i) が all_vertices に含まれることを示す
   use (1, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
@@ -317,8 +317,8 @@ def y (i : ZMod n) : vertices n := by
   use i.val, i.val_lt
   simp
 
-def u (i : ZMod n) : vertices n := by
-  -- (0, i) が all_vertices に含まれることを示す
+def uu (i : ZMod n) : vertices n := by
+  -- (2, i) が all_vertices に含まれることを示す
   use (2, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
@@ -327,8 +327,8 @@ def u (i : ZMod n) : vertices n := by
   use i.val, i.val_lt
   simp
 
-def v (i : ZMod n) : vertices n := by
-  -- (0, i) が all_vertices に含まれることを示す
+def vv (i : ZMod n) : vertices n := by
+  -- (3, i) が all_vertices に含まれることを示す
   use (3, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
@@ -337,5 +337,11 @@ def v (i : ZMod n) : vertices n := by
   use i.val, i.val_lt
   simp
 
+-- 局所的な記法を使って関数呼び出しを簡潔にする
+local notation "x" => xx n h₁
+local notation "y" => yy n h₁
+local notation "u" => uu n h₁
+local notation "v" => vv n h₁
+
 def edges : List (vertices n × vertices n) :=
-  []
+  [(x ↑0, y ↑0)]
