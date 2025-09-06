@@ -344,4 +344,9 @@ local notation "u" => uu n h₁
 local notation "v" => vv n h₁
 
 def edges : List (vertices n × vertices n) :=
-  [(x ↑0, y ↑0)]
+  ((List.range n).map fun m => (x ↑m, x ↑(m + 1))) ++
+  ((List.range n).map fun m => (y ↑m, y ↑(m + 1))) ++
+  ((List.range n).map fun m => (u ↑m, v ↑(m + t))) ++
+  ((List.range n).map fun m => (v ↑m, u ↑(m + t))) ++
+  ((List.range n).map fun m => (x ↑m, u ↑m)) ++
+  ((List.range n).map fun m => (y ↑m, v ↑m))
