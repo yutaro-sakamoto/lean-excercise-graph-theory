@@ -350,3 +350,14 @@ def edges : List (vertices n × vertices n) :=
   ((List.range n).map fun m => (v ↑m, u ↑(m + t))) ++
   ((List.range n).map fun m => (x ↑m, u ↑m)) ++
   ((List.range n).map fun m => (y ↑m, v ↑m))
+
+
+-- vertices 型の DecidableEq インスタンスを定義
+instance : DecidableEq (vertices n) := fun a b =>
+  if h : a.val = b.val then
+    isTrue (Subtype.ext h)
+  else
+    isFalse (fun heq => h (congrArg Subtype.val heq))
+
+def dgpg : SimpleGraph (vertices n) :=
+  simple_graph_from_list (edges n t h₁)
