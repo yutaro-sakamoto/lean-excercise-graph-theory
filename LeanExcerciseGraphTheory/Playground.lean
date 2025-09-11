@@ -43,4 +43,13 @@ lemma comm_add_z_mod (n : Nat) (a b : ZMod n) : a + b = b + a := by
       simp +arith [ZMod.val_add]
     exact ZMod.val_injective n eq
 
+#check Nat.casesOn
+#check @Add.add (Fin 1)
 #check ZMod.val_injective
+
+structure MyZMod (n : ℕ) where
+  val : ℕ
+  h : val < n
+
+def myZModAdd {n : ℕ} (h : n > 0) (a b : MyZMod n) : MyZMod n :=
+  ⟨(a.val + b.val) % n, Nat.mod_lt (a.val + b.val) h⟩
