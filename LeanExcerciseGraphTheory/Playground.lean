@@ -1,4 +1,5 @@
 import Mathlib.Data.ZMod.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
 --import Mathlib.Data.Nat.Defs
 
 open Nat
@@ -53,3 +54,16 @@ structure MyZMod (n : ℕ) where
 
 def myZModAdd {n : ℕ} (h : n > 0) (a b : MyZMod n) : MyZMod n :=
   ⟨(a.val + b.val) % n, Nat.mod_lt (a.val + b.val) h⟩
+
+def squareGraph : SimpleGraph (Fin 4) where
+  Adj := fun i j =>
+    (i = 0 ∧ j = 1) ∨ (i = 1 ∧ j = 0) ∨  -- 0-1 辺
+    (i = 1 ∧ j = 2) ∨ (i = 2 ∧ j = 1) ∨  -- 1-2 辺
+    (i = 2 ∧ j = 3) ∨ (i = 3 ∧ j = 2) ∨  -- 2-3 辺
+    (i = 3 ∧ j = 0) ∨ (i = 0 ∧ j = 3)    -- 3-0 辺
+  loopless := by
+    -- 自己ループがないことを証明
+    intro i
+    fin_cases i <;> simp
+
+#check SimpleGraph.loopless
