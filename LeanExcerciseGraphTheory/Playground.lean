@@ -92,19 +92,26 @@ lemma absurd_one_eq_zero (nGt1 : n > 1) : ((1 : ZMod n) ≠ (0 : ZMod n))  := by
   simp +arith at h_val_eq
 
 
---def dgpg : SimpleGraph (vertices n) where
---  Adj := fun v₁ v₂ =>
---    let (w₁, i) := v₁.val
---    let (w₂, j) := v₂.val
---    if w₁ = 0 && w₂ = 0 then
---      j = i + 1 ∨ i = j + 1
---    else
---      False
---  loopless := by
---    intro v
---    let (w, i) := v.val
---    by_cases h : w = 0
---    . simp [*]
---      intro h'
---      intro h''
---      exact absurd_one_eq_zero h''
+def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
+  Adj := fun v₁ v₂ =>
+    let (w₁, i) := v₁.val
+    let (w₂, j) := v₂.val
+    if w₁ = 0 && w₂ = 0 then
+      j = i + 1 ∨ i = j + 1
+    else
+      False
+  symm := by
+    intro v₁ v₂ h
+    by_cases h' : v₁.val.1 = 0 ∧ v₂.val.1 = 0
+    · simp [*] at *
+      apply Or.symm h
+    · simp [*] at *
+
+  loopless := by
+    intro v
+    let (w, i) := v.val
+    by_cases h : w = 0 <;> {
+      simp [*]
+      intro h'
+      exact absurd_one_eq_zero n nGt1
+    }
