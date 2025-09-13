@@ -67,3 +67,44 @@ def squareGraph : SimpleGraph (Fin 4) where
     fin_cases i <;> simp
 
 #check SimpleGraph.loopless
+
+variable (n : Nat)
+variable (t : Nat)
+variable (h₁ : n > 1)
+variable (h₂ : t > 0)
+variable (h₃ : t < n)
+
+def all_vertices : Finset (Nat × ZMod n) := by
+  exact (Finset.range n).image (fun i : Nat => ((0 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((1 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((2 : Nat), (i : ZMod n))) ∪
+        (Finset.range n).image (fun i : Nat => ((3 : Nat), (i : ZMod n)))
+
+def vertices := {x // x ∈ all_vertices n}
+
+lemma absurd_one_eq_zero (nGt1 : n > 1) : ((1 : ZMod n) ≠ (0 : ZMod n))  := by
+  intro h_eq
+  -- n > 1 から Fact (1 < n) を提供
+  haveI : Fact (1 < n) := ⟨nGt1⟩
+  -- ZMod.val で矛盾を導く
+  have h_val_eq : (1 : ZMod n).val = (0 : ZMod n).val := by
+    rw [h_eq]
+  simp +arith at h_val_eq
+
+
+--def dgpg : SimpleGraph (vertices n) where
+--  Adj := fun v₁ v₂ =>
+--    let (w₁, i) := v₁.val
+--    let (w₂, j) := v₂.val
+--    if w₁ = 0 && w₂ = 0 then
+--      j = i + 1 ∨ i = j + 1
+--    else
+--      False
+--  loopless := by
+--    intro v
+--    let (w, i) := v.val
+--    by_cases h : w = 0
+--    . simp [*]
+--      intro h'
+--      intro h''
+--      exact absurd_one_eq_zero h''
