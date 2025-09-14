@@ -91,27 +91,35 @@ lemma absurd_one_eq_zero (nGt1 : n > 1) : ((1 : ZMod n) ≠ (0 : ZMod n))  := by
     rw [h_eq]
   simp +arith at h_val_eq
 
+#check absurd_one_eq_zero
+def vertex_x (w : Nat) : Bool := w = 0
+def vertex_u (w : Nat) : Bool := w = 1
+def vertex_v (w : Nat) : Bool := w = 2
+def vertex_y (w : Nat) : Bool := w = 3
 
 def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
   Adj := fun v₁ v₂ =>
     let (w₁, i) := v₁.val
     let (w₂, j) := v₂.val
-    if w₁ = 0 && w₂ = 0 then
+    if w₁ = 0 ∧  w₂ = 0 then
       j = i + 1 ∨ i = j + 1
+    else if (w₁ = 0 ∧ w₂ = 1) ∨ (w₁ = 1 ∧ w₂ = 0) then
+      i = j
     else
       False
-  symm := by
-    intro v₁ v₂ h
-    by_cases h' : v₁.val.1 = 0 ∧ v₂.val.1 = 0
-    · simp [*] at *
-      apply Or.symm h
-    · simp [*] at *
+  --symm := by
+  --  intro v₁ v₂ h
+  --  by_cases h' : v₁.val.1 = 0 ∧ v₂.val.1 = 0
+  --  · simp [*] at *
+  --    apply Or.symm h
+  --  · simp [*] at *
 
   loopless := by
-    intro v
-    let (w, i) := v.val
+    let oneNeqZero : (1 : ZMod n) ≠ (0 : ZMod n) := absurd_one_eq_zero n nGt1
+    intro vertex
+    let (w, i) := vertex.val
     by_cases h : w = 0 <;> {
       simp [*]
       intro h'
-      exact absurd_one_eq_zero n nGt1
+      simp [*]
     }
