@@ -107,12 +107,23 @@ def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
       i = j
     else
       False
-  --symm := by
-  --  intro v₁ v₂ h
-  --  by_cases h' : v₁.val.1 = 0 ∧ v₂.val.1 = 0
-  --  · simp [*] at *
-  --    apply Or.symm h
-  --  · simp [*] at *
+
+  symm := by
+    intro v₁ v₂ h
+    by_cases h' : v₁.val.1 = 0 ∧ v₂.val.1 = 0
+    · simp [*] at *
+      apply Or.symm h
+    · simp [*] at *
+      by_cases h'' : (v₂.val.1 = 0 ∧ v₁.val.1 = 0)
+      · simp [*] at *
+      · simp [*] at *
+        cases h.left with
+        | inl h_left =>
+          apply Or.inr
+          exact ⟨h_left.right, h_left.left⟩
+        | inr h_right =>
+          apply Or.inl
+          exact ⟨h_right.right, h_right.left⟩
 
   loopless := by
     let oneNeqZero : (1 : ZMod n) ≠ (0 : ZMod n) := absurd_one_eq_zero n nGt1
