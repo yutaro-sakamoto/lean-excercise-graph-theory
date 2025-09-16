@@ -1,5 +1,6 @@
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Data.Set.Defs
 --import Mathlib.Data.Nat.Defs
 
 open Nat
@@ -134,3 +135,13 @@ def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
       intro h'
       simp [*]
     }
+
+universe u
+def List.toSet {α : Type u} :  List α → Set α
+  | []    => ∅
+  | a::as => {a} ∪ as.toSet
+
+def emptyGraph : SimpleGraph (vertices n) :=
+  SimpleGraph.fromEdgeSet (
+    List.toSet []
+  )
