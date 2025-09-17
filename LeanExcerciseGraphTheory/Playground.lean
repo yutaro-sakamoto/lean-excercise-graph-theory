@@ -98,7 +98,7 @@ def vertex_u (w : Nat) : Bool := w = 1
 def vertex_v (w : Nat) : Bool := w = 2
 def vertex_y (w : Nat) : Bool := w = 3
 
-def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
+def example_graph (nGt1 : n > 1) : SimpleGraph (vertices n) where
   Adj := fun v₁ v₂ =>
     let (w₁, i) := v₁.val
     let (w₂, j) := v₂.val
@@ -136,12 +136,67 @@ def dgpg (nGt1 : n > 1) : SimpleGraph (vertices n) where
       simp [*]
     }
 
-universe u
-def List.toSet {α : Type u} :  List α → Set α
+universe univ_u
+def List.toSet {α : Type univ_u} :  List α → Set α
   | []    => ∅
   | a::as => {a} ∪ as.toSet
 
-def emptyGraph : SimpleGraph (vertices n) :=
-  SimpleGraph.fromEdgeSet (
-    List.toSet []
-  )
+def n_neq_zero : n ≠ 0 := by
+  intro h
+  rw [h] at h₁
+  contradiction
+
+def xx (i : ZMod n) : vertices n := by
+  -- (0, i) が all_vertices に含まれることを示す
+  use (0, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def yy (i : ZMod n) : vertices n := by
+  -- (1, i) が all_vertices に含まれることを示す
+  use (1, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def uu (i : ZMod n) : vertices n := by
+  -- (2, i) が all_vertices に含まれることを示す
+  use (2, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+def vv (i : ZMod n) : vertices n := by
+  -- (3, i) が all_vertices に含まれることを示す
+  use (3, i)
+  simp [all_vertices]
+  -- ∃ a < n, ↑a = i を証明
+  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have : NeZero n := ⟨n_ne_zero⟩
+  use i.val, i.val_lt
+  simp
+
+-- 局所的な記法を使って関数呼び出しを簡潔にする
+local notation "x" => xx n h₁
+local notation "y" => yy n h₁
+local notation "u" => uu n h₁
+local notation "v" => vv n h₁
+
+def dgpg : SimpleGraph (vertices n) :=
+  SimpleGraph.fromEdgeSet <| List.toSet <|
+    ((List.range n).map fun m => Sym2.mk (x ↑m, x ↑(m + 1))) ++
+    ((List.range n).map fun m => Sym2.mk (y ↑m, y ↑(m + 1))) ++
+    ((List.range n).map fun m => Sym2.mk (u ↑m, v ↑(m + t))) ++
+    ((List.range n).map fun m => Sym2.mk (v ↑m, u ↑(m + t))) ++
+    ((List.range n).map fun m => Sym2.mk (x ↑m, u ↑m)) ++
+    ((List.range n).map fun m => Sym2.mk (y ↑m, v ↑m))
