@@ -73,7 +73,7 @@ def squareGraph : SimpleGraph (Fin 4) where
 
 variable (n : Nat)
 variable (t : Nat)
-variable (h₁ : n > 1)
+variable (nGt1 : n > 1)
 variable (h₂ : t > 0)
 variable (h₃ : t < n)
 
@@ -145,7 +145,7 @@ def List.toSet {α : Type univ_u} :  List α → Set α
 
 def n_neq_zero : n ≠ 0 := by
   intro h
-  rw [h] at h₁
+  rw [h] at nGt1
   contradiction
 
 def xx (i : ZMod n) : vertices n := by
@@ -153,7 +153,7 @@ def xx (i : ZMod n) : vertices n := by
   use (0, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
-  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
   have : NeZero n := ⟨n_ne_zero⟩
   use i.val, i.val_lt
   simp
@@ -163,7 +163,7 @@ def yy (i : ZMod n) : vertices n := by
   use (1, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
-  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
   have : NeZero n := ⟨n_ne_zero⟩
   use i.val, i.val_lt
   simp
@@ -173,7 +173,7 @@ def uu (i : ZMod n) : vertices n := by
   use (2, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
-  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
   have : NeZero n := ⟨n_ne_zero⟩
   use i.val, i.val_lt
   simp
@@ -183,16 +183,16 @@ def vv (i : ZMod n) : vertices n := by
   use (3, i)
   simp [all_vertices]
   -- ∃ a < n, ↑a = i を証明
-  have n_ne_zero : n ≠ 0 := n_neq_zero n h₁
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
   have : NeZero n := ⟨n_ne_zero⟩
   use i.val, i.val_lt
   simp
 
 -- 局所的な記法を使って関数呼び出しを簡潔にする
-local notation "x" => xx n h₁
-local notation "y" => yy n h₁
-local notation "u" => uu n h₁
-local notation "v" => vv n h₁
+local notation "x" => xx n nGt1
+local notation "y" => yy n nGt1
+local notation "u" => uu n nGt1
+local notation "v" => vv n nGt1
 
 def dgpg : SimpleGraph (vertices n) :=
   SimpleGraph.fromEdgeSet <| List.toSet <|
@@ -208,8 +208,15 @@ instance : DecidableEq (vertices n) := Subtype.instDecidableEq
 -- Finsetのサブタイプに対するFintypeインスタンス
 noncomputable instance : Fintype (vertices n) := (all_vertices n).finite_toSet.fintype
 
---Hamiltonian サイクルに関する定理（コメントアウト）
-theorem dgpg_is_hamiltonian (nGt1 : n > 1) (tGt0 : t > 0) (tLtN : t < n) :
+lemma dgpg_is_hamiltonian_even (nIsEven : n % 2 = 0) :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
+  -- n が偶数のときの Hamiltonian cycle の構成と証明をここに記述
+  sorry
+
+--Hamiltonian サイクルに関する定理（コメントアウト）
+theorem dgpg_is_hamiltonian :
+  SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
+  by_cases nIsEven : n % 2 = 0
+  . exact dgpg_is_hamiltonian_even n t nGt1 nIsEven
   -- Hamiltonian cycle の構成と証明をここに記述
   sorry
