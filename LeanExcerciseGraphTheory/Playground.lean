@@ -206,8 +206,7 @@ def dgpg : SimpleGraph (vertices n) :=
 -- vertices n は Nat × ZMod n のサブタイプなので、推論で決定可能
 instance : DecidableEq (vertices n) := Subtype.instDecidableEq
 -- Finsetのサブタイプに対するFintypeインスタンス
-noncomputable instance : Fintype (vertices n) := by
-  exact (all_vertices n).finite_toSet.fintype
+noncomputable instance : Fintype (vertices n) := (all_vertices n).finite_toSet.fintype
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian (nGt1 : n > 1) (tGt0 : t > 0) (tLtN : t < n) :
