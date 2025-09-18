@@ -211,6 +211,6 @@ noncomputable instance : Fintype (vertices n) := by
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian (nGt1 : n > 1) (tGt0 : t > 0) (tLtN : t < n) :
-  SimpleGraph.IsHamiltonian (dgpg n t h₁) := by
+  SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
   -- Hamiltonian cycle の構成と証明をここに記述
   sorry
