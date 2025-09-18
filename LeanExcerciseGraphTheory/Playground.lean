@@ -1,6 +1,8 @@
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Set.Defs
+import Mathlib.Combinatorics.SimpleGraph.Hamiltonian
+import Mathlib.Data.Set.Finite.Basic
 --import Mathlib.Data.Nat.Defs
 
 open Nat
@@ -200,3 +202,15 @@ def dgpg : SimpleGraph (vertices n) :=
     ((List.range n).map fun m => Sym2.mk (v ↑m, u ↑(m + t))) ++
     ((List.range n).map fun m => Sym2.mk (x ↑m, u ↑m)) ++
     ((List.range n).map fun m => Sym2.mk (y ↑m, v ↑m))
+
+-- vertices n は Nat × ZMod n のサブタイプなので、推論で決定可能
+instance : DecidableEq (vertices n) := Subtype.instDecidableEq
+-- Finsetのサブタイプに対するFintypeインスタンス
+noncomputable instance : Fintype (vertices n) := by
+  exact (all_vertices n).finite_toSet.fintype
+
+--Hamiltonian サイクルに関する定理（コメントアウト）
+theorem dgpg_is_hamiltonian (nGt1 : n > 1) (tGt0 : t > 0) (tLtN : t < n) :
+  SimpleGraph.IsHamiltonian (dgpg n t h₁) := by
+  -- Hamiltonian cycle の構成と証明をここに記述
+  sorry
