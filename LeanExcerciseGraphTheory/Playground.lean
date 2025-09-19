@@ -145,7 +145,6 @@ def example_graph (nGt1 : n > 1) : SimpleGraph (vertices n) where
 -- ===============================================
 
 -- 頂点数3の完全グラフの定義（全ての頂点間に辺がある）
-def complete_graph_3 : SimpleGraph (Fin 3) := ⊤
 
 -- 3つの頂点を明示的に定義
 def v0 : Fin 3 := 0  -- 頂点 0
@@ -156,6 +155,9 @@ def v2 : Fin 3 := 2  -- 頂点 2
 lemma v0_ne_v1 : v0 ≠ v1 := by simp [v0, v1]
 lemma v1_ne_v2 : v1 ≠ v2 := by simp [v1, v2]
 lemma v2_ne_v0 : v2 ≠ v0 := by simp [v2, v0]
+
+def complete_graph_3 : SimpleGraph (Fin 3) := SimpleGraph.fromEdgeSet <|
+  { Sym2.mk (v0, v1), Sym2.mk (v1, v2), Sym2.mk (v2, v0) }
 
 -- メイン定理：頂点数3の完全グラフには長さ3のサイクルが存在する
 theorem complete_graph_3_triangle_cycle :
@@ -263,6 +265,36 @@ lemma dgpg_is_hamiltonian_even (nIsEven : n % 2 = 0) :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
   -- n が偶数のときの Hamiltonian cycle の構成と証明をここに記述
   sorry
+
+def G := dgpg n t nGt1
+
+lemma neq_2_0 : 2 ≠ 0 := by
+  norm_num
+
+lemma u0x0_ne : (u 0) ≠ (x 0) := by
+  intro h
+  simp [uu, xx] at *
+  -- h から val フィールドの等価性を取得
+  have h_val : (u 0).val = (x 0).val := by
+    exact congrArg Subtype.val h
+  have : 2 = 0 := by
+    -- val フィールドから最初の成分を比較
+    have : (u 0).val.fst = (x 0).val.fst := by
+      rw [h_val]
+    simp [uu, xx] at this
+  have : 2 ≠ 0 := neq_2_0
+  contradiction
+
+--def u0x0_edj : (dgpg n t nGt1).Adj (u 0) (x 0) := by
+--  have : (u 0) ≠ (x 0) := by
+--    simp [uu, xx] at *
+--    intro h
+--    have : 2 = 0 := by
+--      calc
+--        2 = h. := rfl
+--        _ = (x 0).val.1 := rfl
+--        _ = 0 := rfl
+--  simp [dgpg] at *
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
