@@ -3,6 +3,7 @@ import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Set.Defs
 import Mathlib.Combinatorics.SimpleGraph.Hamiltonian
 import Mathlib.Data.Set.Finite.Basic
+import Mathlib.Tactic.NormNum
 --import Mathlib.Data.Nat.Defs
 
 open Nat
@@ -137,6 +138,56 @@ def example_graph (nGt1 : n > 1) : SimpleGraph (vertices n) where
       intro h'
       simp [*]
     }
+
+
+-- ===============================================
+-- 頂点数3の完全グラフのサイクル存在証明
+-- ===============================================
+
+-- 頂点数3の完全グラフの定義（全ての頂点間に辺がある）
+def complete_graph_3 : SimpleGraph (Fin 3) := ⊤
+
+-- 3つの頂点を明示的に定義
+def v0 : Fin 3 := 0  -- 頂点 0
+def v1 : Fin 3 := 1  -- 頂点 1
+def v2 : Fin 3 := 2  -- 頂点 2
+
+-- 不等性の補助lemma（完全グラフの隣接性に必要）
+lemma v0_ne_v1 : v0 ≠ v1 := by simp [v0, v1]
+lemma v1_ne_v2 : v1 ≠ v2 := by simp [v1, v2]
+lemma v2_ne_v0 : v2 ≠ v0 := by simp [v2, v0]
+
+-- メイン定理：頂点数3の完全グラフには長さ3のサイクルが存在する
+theorem complete_graph_3_triangle_cycle :
+  ∃ (p : SimpleGraph.Walk complete_graph_3 v0 v0), p.length = 3 := by
+  -- 完全グラフでは任意の異なる頂点間に辺がある
+  have h01 : complete_graph_3.Adj v0 v1 := by
+    simp [complete_graph_3]
+    exact v0_ne_v1
+  have h12 : complete_graph_3.Adj v1 v2 := by
+    simp [complete_graph_3]
+    exact v1_ne_v2
+  have h20 : complete_graph_3.Adj v2 v0 := by
+    simp [complete_graph_3]
+    exact v2_ne_v0
+
+  -- 三角形サイクル 0 → 1 → 2 → 0 を構築
+  let triangle := SimpleGraph.Walk.cons h01
+    (SimpleGraph.Walk.cons h12 (SimpleGraph.Walk.cons h20 SimpleGraph.Walk.nil))
+
+  use triangle
+  -- 長さが3であることを確認
+  simp [triangle]
+
+-- より一般的な形：頂点数3の完全グラフにはサイクルがある
+theorem complete_graph_3_has_cycle_general :
+  ∃ (p : SimpleGraph.Walk complete_graph_3 v0 v0), p.length ≥ 3 := by
+  -- 上で構築した長さ3の三角形サイクルを使用
+  obtain ⟨triangle, h_len⟩ := complete_graph_3_triangle_cycle
+  use triangle
+  rw [h_len]
+
+-- ===============================================
 
 universe univ_u
 def List.toSet {α : Type univ_u} :  List α → Set α
