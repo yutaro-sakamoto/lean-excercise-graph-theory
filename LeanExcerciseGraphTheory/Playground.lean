@@ -286,15 +286,8 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
   contradiction
 
 --def u0x0_edj : (dgpg n t nGt1).Adj (u 0) (x 0) := by
---  have : (u 0) ≠ (x 0) := by
---    simp [uu, xx] at *
---    intro h
---    have : 2 = 0 := by
---      calc
---        2 = h. := rfl
---        _ = (x 0).val.1 := rfl
---        _ = 0 := rfl
---  simp [dgpg] at *
+--  have : (u 0) ≠ (x 0) := u0x0_ne n nGt1
+--  simp [dgpg, this] at *
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
