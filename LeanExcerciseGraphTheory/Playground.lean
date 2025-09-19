@@ -4,7 +4,7 @@ import Mathlib.Data.Set.Defs
 import Mathlib.Combinatorics.SimpleGraph.Hamiltonian
 import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Tactic.NormNum
---import Mathlib.Data.Nat.Defs
+import Init.Data.List.Basic
 
 open Nat
 
@@ -284,6 +284,27 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
     simp [uu, xx] at this
   have : 2 ≠ 0 := neq_2_0
   contradiction
+
+lemma elem_not_mem_of_empty_list {α : Type univ_u} {elem : α} : List.Mem elem [] → False := by
+  intro h
+  cases h
+
+lemma elem_list_to_set
+  {α : Type univ_u} {elem : α} {lst : List α}
+  : List.Mem elem lst → elem ∈ List.toSet lst := by
+  intro h
+  induction lst with
+  | nil =>
+    exact elem_not_mem_of_empty_list h
+  | cons a as ih =>
+    simp [List.toSet]
+    cases h with
+    | head =>
+      apply Or.inl
+      rfl
+    | tail =>
+      apply Or.inr
+      exact ih ‹List.Mem elem as›
 
 --def u0x0_edj : (dgpg n t nGt1).Adj (u 0) (x 0) := by
 --  have : (u 0) ≠ (x 0) := u0x0_ne n nGt1
