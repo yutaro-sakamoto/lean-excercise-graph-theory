@@ -306,6 +306,17 @@ lemma elem_list_to_set
       apply Or.inr
       exact ih ‹List.Mem elem as›
 
+#check List.mem_append_left
+
+lemma elem_mem_concated_list_6
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst6
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  exact List.mem_append_right (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) h
+
+
 --def u0x0_edj : (dgpg n t nGt1).Adj (u 0) (x 0) := by
 --  have : (u 0) ≠ (x 0) := u0x0_ne n nGt1
 --  simp [dgpg, this] at *
