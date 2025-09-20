@@ -384,6 +384,25 @@ lemma elem_mem_concated_list_1
     exact List.mem_append_left lst5 this
   exact List.mem_append_left lst6 this
 
+#check Sym2.mk (u 0, x 0)
+
+lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
+  simp [dgpg, u0x0_ne]
+  apply elem_list_to_set
+  have h_mem : List.Mem (s(u ↑0, x ↑0)) ((List.range n).map fun m => Sym2.mk (x ↑m, u ↑m)) := by
+    sorry
+  have h_mem_append : List.Mem (s(u ↑0, x ↑0))
+    (((List.range n).map fun m => Sym2.mk (x ↑m, x ↑(m + 1))) ++
+    ((List.range n).map fun m => Sym2.mk (y ↑m, y ↑(m + 1))) ++
+    ((List.range n).map fun m => Sym2.mk (u ↑m, v ↑(m + t))) ++
+    ((List.range n).map fun m => Sym2.mk (v ↑m, u ↑(m + t))) ++
+    ((List.range n).map fun m => Sym2.mk (x ↑m, u ↑m)) ++
+    ((List.range n).map fun m => Sym2.mk (y ↑m, v ↑m))) := by
+    exact elem_mem_concated_list_5 h_mem
+
+
+
+
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
