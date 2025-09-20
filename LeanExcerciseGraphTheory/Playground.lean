@@ -316,10 +316,73 @@ lemma elem_mem_concated_list_6
   intro h
   exact List.mem_append_right (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) h
 
+lemma elem_mem_concated_list_5
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst5
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) := by
+    exact List.mem_append_right (lst1 ++ lst2 ++ lst3 ++ lst4) h
+  exact List.mem_append_left lst6 this
 
---def u0x0_edj : (dgpg n t nGt1).Adj (u 0) (x 0) := by
---  have : (u 0) ≠ (x 0) := u0x0_ne n nGt1
---  simp [dgpg, this] at *
+lemma elem_mem_concated_list_4
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst4
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4) := by
+    exact List.mem_append_right (lst1 ++ lst2 ++ lst3) h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) := by
+    exact List.mem_append_left lst5 this
+  exact List.mem_append_left lst6 this
+
+lemma elem_mem_concated_list_3
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst3
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3) := by
+    exact List.mem_append_right (lst1 ++ lst2) h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4) := by
+    exact List.mem_append_left lst4 this
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) := by
+    exact List.mem_append_left lst5 this
+  exact List.mem_append_left lst6 this
+
+lemma elem_mem_concated_list_2
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst2
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  have : List.Mem elem (lst1 ++ lst2) := by
+    exact List.mem_append_right lst1 h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3) := by
+    exact List.mem_append_left lst3 this
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4) := by
+    exact List.mem_append_left lst4 this
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) := by
+    exact List.mem_append_left lst5 this
+  exact List.mem_append_left lst6 this
+
+lemma elem_mem_concated_list_1
+  {α : Type univ_u} {elem : α}
+  {lst1 lst2 lst3 lst4 lst5 lst6 : List α}
+  : List.Mem elem lst1
+    → List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5 ++ lst6) := by
+  intro h
+  have : List.Mem elem (lst1 ++ lst2) := by
+    exact List.mem_append_left lst2 h
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3) := by
+    exact List.mem_append_left lst3 this
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4) := by
+    exact List.mem_append_left lst4 this
+  have : List.Mem elem (lst1 ++ lst2 ++ lst3 ++ lst4 ++ lst5) := by
+    exact List.mem_append_left lst5 this
+  exact List.mem_append_left lst6 this
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
