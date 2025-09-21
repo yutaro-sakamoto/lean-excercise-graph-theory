@@ -386,8 +386,16 @@ lemma elem_mem_concated_list_1
 
 #check Sym2.mk (u 0, x 0)
 
+#check ((List.range 3).map fun m => m + 1) ++ ((List.range 3).map fun m => m + 2)
+#check List.Mem s(x ↑0, u ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
+
+lemma example_lemma
+  : List.Mem s(x ↑0, u ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
+  := by
+  sorry
+
 lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
-  simp [dgpg, u0x0_ne]
+  simp [dgpg, u0x0_ne, *]
   apply elem_list_to_set
   have h_mem : List.Mem (s(u ↑0, x ↑0)) ((List.range n).map fun m => Sym2.mk (x ↑m, u ↑m)) := by
     sorry
@@ -400,8 +408,7 @@ lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
     ((List.range n).map fun m => Sym2.mk (y ↑m, v ↑m))) := by
     exact elem_mem_concated_list_5 h_mem
 
-
-
+  sorry
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
