@@ -390,9 +390,23 @@ lemma elem_mem_concated_list_1
 #check List.Mem s(x ↑0, u ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
 
 lemma example_lemma
-  : List.Mem s(x ↑0, u ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
+  : List.Mem s(u ↑0, x ↑0)
+    (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
   := by
-  sorry
+  -- List.mem_map の構造を直接証明
+  apply List.mem_map.mpr
+  use 0
+  constructor
+  · -- 0 ∈ List.flatMap (fun a ↦ [↑a]) (List.range n) を証明
+    simp [List.mem_flatMap]
+    use 0
+    constructor
+    · -- 0 ∈ List.range n を証明
+      exact Nat.pos_of_ne_zero (n_neq_zero n nGt1)
+    · -- 0 ∈ [↑0] を証明
+      simp
+  · -- s(x 0, u 0) = s(x ↑0, u ↑0) を証明
+    simp
 
 lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
   simp [dgpg, u0x0_ne, *]
