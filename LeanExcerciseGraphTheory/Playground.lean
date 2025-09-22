@@ -384,19 +384,23 @@ lemma elem_mem_concated_list_1
     exact List.mem_append_left lst5 this
   exact List.mem_append_left lst6 this
 
-#check Sym2.mk (u 0, x 0)
-
-#check ((List.range 3).map fun m => m + 1) ++ ((List.range 3).map fun m => m + 2)
-#check List.Mem s(x ↑0, u ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
-
-lemma example_lemma
-  : List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)))
-  := by
-  -- List.mem_map の構造を直接証明
+lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
+  simp [dgpg, u0x0_ne]
+  apply elem_list_to_set
+  -- s(u ↑0, x ↑0) = s(x ↑0, u ↑0) なので、第5リストの要素として存在する
+  have h_sym : s(u ↑0, x ↑0) = s(x ↑0, u ↑0) := by simp [Sym2.eq_swap]
+  rw [h_sym]
+  -- List.mem_append を何回か使って段階的に拡張
+  apply List.mem_append_right
+  apply List.mem_append_right
+  apply List.mem_append_right
+  apply List.mem_append_right
+  apply List.mem_append_left
+  -- 5番目のリストに直接含まれることを証明
   apply List.mem_map.mpr
   use 0
   constructor
-  · -- 0 ∈ List.flatMap (fun a ↦ [↑a]) (List.range n) を証明
+  · -- 0 ∈ List.flatMap (fun a ↦ [a]) (do let a ← List.range n; pure ↑a) を証明
     simp [List.mem_flatMap]
     use 0
     constructor
@@ -406,91 +410,6 @@ lemma example_lemma
       simp
   · -- s(x 0, u 0) = s(x ↑0, u ↑0) を証明
     simp
-
-lemma example_lemma_2 :
-  List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))) ↔
-  List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [a]) do
-    let a ← List.range n
-    pure ↑a)) := by
-  simp
-
-lemma example_lemma_3 :
-  List.Mem s(u 0, x 0)
-  (List.map (fun m ↦ s(x m, x (m + 1)))
-      (List.flatMap (fun a ↦ [a]) do
-        let a ← List.range n
-        pure ↑a) ++
-    (List.map (fun m ↦ s(y m, y (m + 1)))
-        (List.flatMap (fun a ↦ [a]) do
-          let a ← List.range n
-          pure ↑a) ++
-      (List.map (fun m ↦ s(u m, v (m + ↑t)))
-          (List.flatMap (fun a ↦ [a]) do
-            let a ← List.range n
-            pure ↑a) ++
-        (List.map (fun m ↦ s(v m, u (m + ↑t)))
-            (List.flatMap (fun a ↦ [a]) do
-              let a ← List.range n
-              pure ↑a) ++
-          (List.map (fun m ↦ s(x m, u m))
-              (List.flatMap (fun a ↦ [a]) do
-                let a ← List.range n
-                pure ↑a) ++
-            List.map (fun m ↦ s(y m, v m))
-              (List.flatMap (fun a ↦ [a]) do
-                let a ← List.range n
-                pure ↑a))))))
-  →
-  List.Mem s(u 0, x 0)
-    (List.map (fun m ↦ s(x m, x (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-      (List.map (fun m ↦ s(y m, y (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-        (List.map (fun m ↦ s(u m, v (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-          (List.map (fun m ↦ s(v m, u (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-            (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-              List.map (fun m ↦ s(y m, v m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))))))) := by simp
-
-#check example_lemma_3
-
-lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
-  simp [dgpg, u0x0_ne, *]
-  apply elem_list_to_set
-  have h_mem : List.Mem s(u ↑0, x ↑0)
-    (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))) := by
-    -- List.mem_map の構造を直接証明
-    apply List.mem_map.mpr
-    use 0
-    constructor
-    · -- 0 ∈ List.flatMap (fun a ↦ [↑a]) (List.range n) を証明
-      simp [List.mem_flatMap]
-      use 0
-      constructor
-      · -- 0 ∈ List.range n を証明
-        exact Nat.pos_of_ne_zero (n_neq_zero n nGt1)
-      · -- 0 ∈ [↑0] を証明
-        simp
-    · -- s(x 0, u 0) = s(x ↑0, u ↑0) を証明
-      simp
-  have h_mem2 :
-  List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))) ↔
-  List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [a]) do
-    let a ← List.range n
-    pure ↑a)) := by
-    simp
-  have h_mem3 : List.Mem s(u ↑0, x ↑0) (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [a]) do
-    let a ← List.range n
-    pure ↑a)) := by
-    rw [h_mem2]
-    exact h_mem
-
-  have subgoal : List.Mem s(u 0, x 0)
-    (List.map (fun m ↦ s(x m, x (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-      (List.map (fun m ↦ s(y m, y (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-        (List.map (fun m ↦ s(u m, v (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-          (List.map (fun m ↦ s(v m, u (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-            (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
-              List.map (fun m ↦ s(y m, v m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))))))) := by
-    sorry
-  sorry
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
