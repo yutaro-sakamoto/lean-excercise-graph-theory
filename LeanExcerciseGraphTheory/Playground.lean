@@ -285,6 +285,20 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
+lemma ux_ne (i : ZMod n): (u i) ≠ (x i) := by
+  intro h
+  simp [uu, xx] at *
+  -- h から val フィールドの等価性を取得
+  have h_val : (u i).val = (x i).val := by
+    exact congrArg Subtype.val h
+  have : 2 = 0 := by
+    -- val フィールドから最初の成分を比較
+    have : (u i).val.fst = (x i).val.fst := by
+      rw [h_val]
+    simp [uu, xx] at this
+  have : 2 ≠ 0 := neq_2_0
+  contradiction
+
 lemma elem_not_mem_of_empty_list {α : Type univ_u} {elem : α} : List.Mem elem [] → False := by
   intro h
   cases h
@@ -410,6 +424,36 @@ lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
       simp
   · -- s(x 0, u 0) = s(x ↑0, u ↑0) を証明
     simp
+
+--lemma ux_edge (i : ZMod n): (dgpg n t nGt1).Adj (u i) (x i) := by
+--  simp [dgpg, ux_ne]
+--  apply elem_list_to_set
+--  -- s(u ↑0, x ↑0) = s(x ↑0, u ↑0) なので、第5リストの要素として存在する
+--  have h_sym : s(u ↑i, x ↑i) = s(x ↑i, u ↑i) := by simp [Sym2.eq_swap]
+--  rw [h_sym]
+--  -- List.mem_append を何回か使って段階的に拡張
+--  apply List.mem_append_right
+--  apply List.mem_append_right
+--  apply List.mem_append_right
+--  apply List.mem_append_right
+--  apply List.mem_append_left
+--  -- 5番目のリストに直接含まれることを証明
+--  apply List.mem_map.mpr
+--  use i
+--  constructor
+--  · -- 0 ∈ List.flatMap (fun a ↦ [a]) (do let a ← List.range n; pure ↑a) を証明
+--    simp [List.mem_flatMap]
+--    use i.val
+--    constructor
+--    · have : ZMod n = Fin n := by
+--        simp [ZMod]
+--        match n with
+--        | 0 => contradiction
+--        | 1 => contradiction
+--        | Nat.succ n' => rfl
+--      have : Fin n := by
+
+
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
