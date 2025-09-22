@@ -414,6 +414,43 @@ lemma example_lemma_2 :
     pure ↑a)) := by
   simp
 
+lemma example_lemma_3 :
+  List.Mem s(u 0, x 0)
+  (List.map (fun m ↦ s(x m, x (m + 1)))
+      (List.flatMap (fun a ↦ [a]) do
+        let a ← List.range n
+        pure ↑a) ++
+    (List.map (fun m ↦ s(y m, y (m + 1)))
+        (List.flatMap (fun a ↦ [a]) do
+          let a ← List.range n
+          pure ↑a) ++
+      (List.map (fun m ↦ s(u m, v (m + ↑t)))
+          (List.flatMap (fun a ↦ [a]) do
+            let a ← List.range n
+            pure ↑a) ++
+        (List.map (fun m ↦ s(v m, u (m + ↑t)))
+            (List.flatMap (fun a ↦ [a]) do
+              let a ← List.range n
+              pure ↑a) ++
+          (List.map (fun m ↦ s(x m, u m))
+              (List.flatMap (fun a ↦ [a]) do
+                let a ← List.range n
+                pure ↑a) ++
+            List.map (fun m ↦ s(y m, v m))
+              (List.flatMap (fun a ↦ [a]) do
+                let a ← List.range n
+                pure ↑a))))))
+  →
+  List.Mem s(u 0, x 0)
+    (List.map (fun m ↦ s(x m, x (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
+      (List.map (fun m ↦ s(y m, y (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
+        (List.map (fun m ↦ s(u m, v (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
+          (List.map (fun m ↦ s(v m, u (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
+            (List.map (fun m ↦ s(x m, u m)) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
+              List.map (fun m ↦ s(y m, v m)) (List.flatMap (fun a ↦ [↑a]) (List.range n))))))) := by simp
+
+#check example_lemma_3
+
 lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
   simp [dgpg, u0x0_ne, *]
   apply elem_list_to_set
@@ -445,7 +482,7 @@ lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
     rw [h_mem2]
     exact h_mem
 
-  have goal : List.Mem s(u 0, x 0)
+  have subgoal : List.Mem s(u 0, x 0)
     (List.map (fun m ↦ s(x m, x (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
       (List.map (fun m ↦ s(y m, y (m + 1))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
         (List.map (fun m ↦ s(u m, v (m + ↑t))) (List.flatMap (fun a ↦ [↑a]) (List.range n)) ++
