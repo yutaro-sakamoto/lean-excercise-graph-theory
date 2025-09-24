@@ -404,11 +404,8 @@ lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
   -- s(u ↑0, x ↑0) = s(x ↑0, u ↑0) なので、第5リストの要素として存在する
   have h_sym : s(u ↑0, x ↑0) = s(x ↑0, u ↑0) := by simp [Sym2.eq_swap]
   rw [h_sym]
-  -- List.mem_append を何回か使って段階的に拡張
-  apply List.mem_append_right
-  apply List.mem_append_right
-  apply List.mem_append_right
-  apply List.mem_append_right
+  -- 5番目のリストに直接移動 (4回右移動してから左移動)
+  iterate 4 apply List.mem_append_right
   apply List.mem_append_left
   -- 5番目のリストに直接含まれることを証明
   apply List.mem_map.mpr
@@ -424,6 +421,19 @@ lemma u0x0_edge : (dgpg n t nGt1).Adj (u ↑0) (x ↑0) := by
       simp
   · -- s(x 0, u 0) = s(x ↑0, u ↑0) を証明
     simp
+
+example {n : Nat} : (n > 1) → (ZMod n) → (Fin n) := by
+  intro nGt1
+  intro i
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+  have : NeZero n := ⟨n_ne_zero⟩
+  exact ⟨i.val, i.val_lt⟩
+
+def z_mod_n_is_fin_n : (ZMod n) → (Fin n) := by
+  intro i
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+  have : NeZero n := ⟨n_ne_zero⟩
+  exact ⟨i.val, i.val_lt⟩
 
 --lemma ux_edge (i : ZMod n): (dgpg n t nGt1).Adj (u i) (x i) := by
 --  simp [dgpg, ux_ne]
