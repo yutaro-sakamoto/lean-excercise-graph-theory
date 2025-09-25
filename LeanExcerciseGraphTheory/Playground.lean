@@ -285,7 +285,7 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
-lemma ux_ne (i : ZMod n): (u i) ≠ (x i) := by
+lemma ux_ne (i : ZMod n) : (u i) ≠ (x i) := by
   intro h
   simp [uu, xx] at *
   -- h から val フィールドの等価性を取得
@@ -435,34 +435,29 @@ def z_mod_n_is_fin_n : (ZMod n) → (Fin n) := by
   have : NeZero n := ⟨n_ne_zero⟩
   exact ⟨i.val, i.val_lt⟩
 
---lemma ux_edge (i : ZMod n): (dgpg n t nGt1).Adj (u i) (x i) := by
---  simp [dgpg, ux_ne]
---  apply elem_list_to_set
---  -- s(u ↑0, x ↑0) = s(x ↑0, u ↑0) なので、第5リストの要素として存在する
---  have h_sym : s(u ↑i, x ↑i) = s(x ↑i, u ↑i) := by simp [Sym2.eq_swap]
---  rw [h_sym]
---  -- List.mem_append を何回か使って段階的に拡張
---  apply List.mem_append_right
---  apply List.mem_append_right
---  apply List.mem_append_right
---  apply List.mem_append_right
---  apply List.mem_append_left
---  -- 5番目のリストに直接含まれることを証明
---  apply List.mem_map.mpr
---  use i
---  constructor
---  · -- 0 ∈ List.flatMap (fun a ↦ [a]) (do let a ← List.range n; pure ↑a) を証明
---    simp [List.mem_flatMap]
---    use i.val
---    constructor
---    · have : ZMod n = Fin n := by
---        simp [ZMod]
---        match n with
---        | 0 => contradiction
---        | 1 => contradiction
---        | Nat.succ n' => rfl
---      have : Fin n := by
-
+lemma ux_edge (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (x i) := by
+  simp [dgpg, ux_ne]
+  apply elem_list_to_set
+  -- s(u i, x i) = s(x i, u i) なので、第5リストの要素として存在する
+  have h_sym : s(u ↑i, x ↑i) = s(x ↑i, u ↑i) := by simp [Sym2.eq_swap]
+  rw [h_sym]
+  -- 5番目のリストに直接移動 (4回右移動してから左移動)
+  iterate 4 apply List.mem_append_right
+  apply List.mem_append_left
+  -- 5番目のリストに直接含まれることを証明
+  apply List.mem_map.mpr
+  use i
+  constructor
+  · -- i ∈ List.range n を証明
+    have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+    have : NeZero n := ⟨n_ne_zero⟩
+    simp [List.mem_flatMap]
+    use i.val
+    constructor
+    · exact i.val_lt
+    · simp
+  · -- s(x i, u i) = s(x ↑i, u ↑i) を証明
+    simp
 
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
