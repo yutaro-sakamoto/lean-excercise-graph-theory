@@ -459,6 +459,10 @@ lemma ux_edge (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (x i) := by
   · -- s(x i, u i) = s(x ↑i, u ↑i) を証明
     simp
 
+lemma xu_edge (i : ZMod n) : (dgpg n t nGt1).Adj (x i) (u i) := by
+  -- s(x i, u i) = s(u i, x i) なので、ux_edge を使う
+  have h_sym : (dgpg n t nGt1).Adj (u i) (x i) := ux_edge n t nGt1 i
+  exact h_sym.symm
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
