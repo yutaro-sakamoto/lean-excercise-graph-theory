@@ -429,12 +429,6 @@ example {n : Nat} : (n > 1) → (ZMod n) → (Fin n) := by
   have : NeZero n := ⟨n_ne_zero⟩
   exact ⟨i.val, i.val_lt⟩
 
-def z_mod_n_is_fin_n : (ZMod n) → (Fin n) := by
-  intro i
-  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
-  have : NeZero n := ⟨n_ne_zero⟩
-  exact ⟨i.val, i.val_lt⟩
-
 lemma ux_edge (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (x i) := by
   simp [dgpg, ux_ne]
   apply elem_list_to_set
