@@ -299,6 +299,20 @@ lemma ux_ne (i : ZMod n) : (u i) ≠ (x i) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
+lemma vy_ne (i : ZMod n) : (v i) ≠ (y i) := by
+  intro h
+  simp [vv, yy] at *
+  -- h から val フィールドの等価性を取得
+  have h_val : (v i).val = (y i).val := by
+    exact congrArg Subtype.val h
+  have : 2 = 0 := by
+    -- val フィールドから最初の成分を比較
+    have : (v i).val.fst = (y i).val.fst := by
+      rw [h_val]
+    simp [vv, yy] at this
+  have : 2 ≠ 0 := neq_2_0
+  contradiction
+
 lemma elem_not_mem_of_empty_list {α : Type univ_u} {elem : α} : List.Mem elem [] → False := by
   intro h
   cases h
