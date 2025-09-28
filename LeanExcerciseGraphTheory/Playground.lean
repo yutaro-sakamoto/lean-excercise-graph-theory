@@ -472,6 +472,33 @@ lemma xu_edge (i : ZMod n) : (dgpg n t nGt1).Adj (x i) (u i) := by
   have h_sym : (dgpg n t nGt1).Adj (u i) (x i) := ux_edge n t nGt1 i
   exact h_sym.symm
 
+lemma vy_edge (i : ZMod n) : (dgpg n t nGt1).Adj (v i) (y i) := by
+  simp [dgpg, vy_ne]
+  apply elem_list_to_set
+  -- s(v i, y i) = s(y i, v i) なので、第6リストの要素として存在する
+  have h_sym : s(v ↑i, y ↑i) = s(y ↑i, v ↑i) := by simp [Sym2.eq_swap]
+  rw [h_sym]
+  -- 6番目のリストに直接移動 (5回右移動)
+  iterate 5 apply List.mem_append_right
+  -- 6番目のリストに直接含まれることを証明
+  apply List.mem_map.mpr
+  use i
+  constructor
+  · -- i ∈ List.range n を証明
+    have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+    have : NeZero n := ⟨n_ne_zero⟩
+    simp [List.mem_flatMap]
+    use i.val
+    constructor
+    · exact i.val_lt
+    · simp
+  · -- s(y i, v i) = s(y ↑i, v ↑i) を証明
+    simp
+
+lemma yv_edge (i : ZMod n) : (dgpg n t nGt1).Adj (y i) (v i) := by
+  have h_sym : (dgpg n t nGt1).Adj (v i) (y i) := vy_edge n t nGt1 i
+  exact h_sym.symm
+
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
