@@ -496,8 +496,21 @@ lemma vy_edge (i : ZMod n) : (dgpg n t nGt1).Adj (v i) (y i) := by
     simp
 
 lemma yv_edge (i : ZMod n) : (dgpg n t nGt1).Adj (y i) (v i) := by
+  -- s(y i, v i) = s(v i, y i) なので、vy_edge を使う
   have h_sym : (dgpg n t nGt1).Adj (v i) (y i) := vy_edge n t nGt1 i
   exact h_sym.symm
+
+def xu_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u i) :=
+  SimpleGraph.Walk.cons (xu_edge n t nGt1 i) SimpleGraph.Walk.nil
+
+def ux_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (u i) (x i) :=
+  SimpleGraph.Walk.cons (ux_edge n t nGt1 i) SimpleGraph.Walk.nil
+
+def yv_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (y i) (v i) :=
+  SimpleGraph.Walk.cons (yv_edge n t nGt1 i) SimpleGraph.Walk.nil
+
+def vy_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (v i) (y i) :=
+  SimpleGraph.Walk.cons (vy_edge n t nGt1 i) SimpleGraph.Walk.nil
 
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
