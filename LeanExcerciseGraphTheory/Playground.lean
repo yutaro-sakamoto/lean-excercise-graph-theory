@@ -285,6 +285,24 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
+lemma xx_ne (i : ZMod n) : (x i) ≠ (x (i + 1)) := by
+  intro h
+  -- xx の定義から第二成分の等価性を得る
+  have h_snd : i = i + 1 := by
+    have h1 : (x i).val = (x (i + 1)).val := congrArg Subtype.val h
+    have h2 : (x i).val.snd = (x (i + 1)).val.snd := by rw [h1]
+    -- xx の定義により (x i).val = (0, i) なので
+    have h3 : (x i).val.snd = i := by simp [xx]
+    have h4 : (x (i + 1)).val.snd = i + 1 := by simp [xx]
+    rw [h3, h4] at h2
+    exact h2
+  -- i = i + 1 から 1 = 0 を導く
+  have h_one_zero : (1 : ZMod n) = 0 := by
+    have : i + 1 - i = i - i := by rw [← h_snd]
+    simp at this
+    exact this
+  exact absurd_one_eq_zero n nGt1 h_one_zero
+
 lemma ux_ne (i : ZMod n) : (u i) ≠ (x i) := by
   intro h
   simp [uu, xx] at *
@@ -466,6 +484,7 @@ lemma ux_edge (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (x i) := by
     · simp
   · -- s(x i, u i) = s(x ↑i, u ↑i) を証明
     simp
+
 
 lemma xu_edge (i : ZMod n) : (dgpg n t nGt1).Adj (x i) (u i) := by
   -- s(x i, u i) = s(u i, x i) なので、ux_edge を使う
