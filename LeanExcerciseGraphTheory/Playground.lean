@@ -303,6 +303,24 @@ lemma xx_ne (i : ZMod n) : (x i) ≠ (x (i + 1)) := by
     exact this
   exact absurd_one_eq_zero n nGt1 h_one_zero
 
+lemma yy_ne (i : ZMod n) : (y i) ≠ (y (i + 1)) := by
+  intro h
+  -- yy の定義から第二成分の等価性を得る
+  have h_snd : i = i + 1 := by
+    have h1 : (y i).val = (y (i + 1)).val := congrArg Subtype.val h
+    have h2 : (y i).val.snd = (y (i + 1)).val.snd := by rw [h1]
+    -- yy の定義により (y i).val = (1, i) なので
+    have h3 : (y i).val.snd = i := by simp [yy]
+    have h4 : (y (i + 1)).val.snd = i + 1 := by simp [yy]
+    rw [h3, h4] at h2
+    exact h2
+  -- i = i + 1 から 1 = 0 を導く
+  have h_one_zero : (1 : ZMod n) = 0 := by
+    have : i + 1 - i = i - i := by rw [← h_snd]
+    simp at this
+    exact this
+  exact absurd_one_eq_zero n nGt1 h_one_zero
+
 lemma ux_ne (i : ZMod n) : (u i) ≠ (x i) := by
   intro h
   simp [uu, xx] at *
