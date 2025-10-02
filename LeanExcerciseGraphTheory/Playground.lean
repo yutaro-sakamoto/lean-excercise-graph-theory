@@ -571,6 +571,9 @@ def vy_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (v i) (y i) :=
 def xx_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (x (i + 1)) :=
   SimpleGraph.Walk.cons (xx_edge n t nGt1 i) SimpleGraph.Walk.nil
 
+def walk_xxu (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u (i + 1)):=
+  SimpleGraph.Walk.append (xx_walk n t nGt1 i) (xu_walk n t nGt1 (i + 1))
+
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
