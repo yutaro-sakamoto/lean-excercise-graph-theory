@@ -555,6 +555,24 @@ lemma xx_edge (i : ZMod n) : (dgpg n t nGt1).Adj (x i) (x (i + 1)) := by
   · -- s(x i, x (i + 1)) = s(x ↑i, x ↑(i + 1)) を証明
     simp
 
+lemma yy_edge (i : ZMod n) : (dgpg n t nGt1).Adj (y i) (y (i + 1)) := by
+  simp [dgpg, yy_ne]
+  apply elem_list_to_set
+  apply List.mem_append_right
+  apply List.mem_append_left
+  apply List.mem_map.mpr
+  use i
+  constructor
+  · -- i ∈ List.range n を証明
+    have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+    have : NeZero n := ⟨n_ne_zero⟩
+    simp [List.mem_flatMap]
+    use i.val
+    constructor
+    · exact i.val_lt
+    · simp
+  · -- s(y i, y (i + 1)) = s(y ↑i, y ↑(i + 1)) を証明
+    simp
 
 def xu_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u i) :=
   SimpleGraph.Walk.cons (xu_edge n t nGt1 i) SimpleGraph.Walk.nil
