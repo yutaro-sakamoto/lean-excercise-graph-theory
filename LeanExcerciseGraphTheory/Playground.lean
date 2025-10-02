@@ -574,6 +574,30 @@ def xx_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (x (i + 1)) :=
 def walk_xxu (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u (i + 1)):=
   SimpleGraph.Walk.append (xx_walk n t nGt1 i) (xu_walk n t nGt1 (i + 1))
 
+lemma xu_diff_ne (i j : ZMod n) : (x i) ≠ (u j) := by
+  intro h
+  simp [xx, uu] at h
+  -- h から val フィールドの等価性を取得
+  have h_val : (x i).val = (u j).val := by
+    exact congrArg Subtype.val h
+  have h_fst : (x i).val.fst = (u j).val.fst := by
+    rw [h_val]
+  simp [xx, uu] at h_fst
+  -- h_fst : 0 = 2 となるが、これは矛盾（自動的に解決される）
+
+-- 3頂点 x i, x (i + 1), u (i + 1) からなるpath
+def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :=
+  ⟨walk_xxu n t nGt1 i, by
+    -- walk_xxu がsimple pathであることを証明
+    unfold walk_xxu xx_walk xu_walk
+    simp [SimpleGraph.Walk.support_cons, SimpleGraph.Walk.support_nil]
+    -- 目標: ¬x (i + 1) = u (i + 1) ∧ ¬x i = x (i + 1) ∧ ¬x i = u (i + 1)
+    constructor
+    · exact (ux_ne n nGt1 (i + 1)).symm
+    constructor
+    · exact xx_ne n nGt1 i
+    · exact xu_diff_ne n nGt1 i (i + 1)⟩
+
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
