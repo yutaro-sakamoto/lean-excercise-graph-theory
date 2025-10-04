@@ -349,6 +349,20 @@ lemma vy_ne (i : ZMod n) : (v i) ≠ (y i) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
+lemma uv_ne (i : ZMod n) : (u i) ≠ (v (i + t)) := by
+  intro h
+  simp [uu, vv] at *
+  -- h から val フィールドの等価性を取得
+  have h_val : (u i).val = (v (i + t)).val := by
+    exact congrArg Subtype.val h
+  have : 2 = 3 := by
+    -- val フィールドから最初の成分を比較
+    have : (u i).val.fst = (v (i + t)).val.fst := by
+      rw [h_val]
+    simp [uu, vv] at this
+  have : 2 ≠ 3 := by norm_num
+  contradiction
+
 lemma elem_not_mem_of_empty_list {α : Type univ_u} {elem : α} : List.Mem elem [] → False := by
   intro h
   cases h
@@ -573,6 +587,9 @@ lemma yy_edge (i : ZMod n) : (dgpg n t nGt1).Adj (y i) (y (i + 1)) := by
     · simp
   · -- s(y i, y (i + 1)) = s(y ↑i, y ↑(i + 1)) を証明
     simp
+
+lemma uv_edge (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (v (i + t)) := by
+  sorry
 
 def xu_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u i) :=
   SimpleGraph.Walk.cons (xu_edge n t nGt1 i) SimpleGraph.Walk.nil
