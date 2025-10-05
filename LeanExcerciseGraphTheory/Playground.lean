@@ -363,6 +363,20 @@ lemma uv_ne (i : ZMod n) : (u i) ≠ (v (i + t)) := by
   have : 2 ≠ 3 := by norm_num
   contradiction
 
+lemma vu_ne (i : ZMod n) : (v i) ≠ (u (i + t)) := by
+  intro h
+  simp [vv, uu] at *
+  -- h から val フィールドの等価性を取得
+  have h_val : (v i).val = (u (i + t)).val := by
+    exact congrArg Subtype.val h
+  have : 3 = 2 := by
+    -- val フィールドから最初の成分を比較
+    have : (v i).val.fst = (u (i + t)).val.fst := by
+      rw [h_val]
+    simp [vv, uu] at this
+  have : 3 ≠ 2 := by norm_num
+  contradiction
+
 lemma elem_not_mem_of_empty_list {α : Type univ_u} {elem : α} : List.Mem elem [] → False := by
   intro h
   cases h
