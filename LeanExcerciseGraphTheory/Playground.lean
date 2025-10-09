@@ -643,6 +643,19 @@ lemma vu_edge (i : ZMod n) : (dgpg n t nGt1).Adj (v i) (u (i + t)) := by
   · -- s(v i, u (i + t)) = s(v ↑i, u ↑(i + t)) を証明
     simp
 
+
+lemma uv_edge_r (i : ZMod n) : (dgpg n t nGt1).Adj (u i) (v (i - t)):= by
+  have h : (dgpg n t nGt1).Adj (v (i - t)) (u ((i - t) + t)) := vu_edge n t nGt1 (i - t)
+  have : (i - t) + t = i := by simp
+  rw [this] at h
+  exact h.symm
+
+lemma vu_edge_r (i : ZMod n) : (dgpg n t nGt1).Adj (v i) (u (i - t)) := by
+  have h : (dgpg n t nGt1).Adj (u (i - t)) (v ((i - t) + t)) := uv_edge n t nGt1 (i - t)
+  have : (i - t) + t = i := by simp
+  rw [this] at h
+  exact h.symm
+
 def xu_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u i) :=
   SimpleGraph.Walk.cons (xu_edge n t nGt1 i) SimpleGraph.Walk.nil
 
