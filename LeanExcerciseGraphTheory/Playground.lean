@@ -680,6 +680,12 @@ def uv_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (u i) (v (i + t)) :=
 def vu_walk (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (v i) (u (i + t)) :=
   SimpleGraph.Walk.cons (vu_edge n t nGt1 i) SimpleGraph.Walk.nil
 
+def uv_walk_r (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (u i) (v (i - t)) :=
+  SimpleGraph.Walk.cons (uv_edge_r n t nGt1 i) SimpleGraph.Walk.nil
+
+def vu_walk_r (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (v i) (u (i - t)) :=
+  SimpleGraph.Walk.cons (vu_edge_r n t nGt1 i) SimpleGraph.Walk.nil
+
 def walk_xxu (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u (i + 1)):=
   SimpleGraph.Walk.append (xx_walk n t nGt1 i) (xu_walk n t nGt1 (i + 1))
 
