@@ -75,8 +75,8 @@ def squareGraph : SimpleGraph (Fin 4) where
 variable (n : Nat)
 variable (t : Nat)
 variable (nGt1 : n > 1)
-variable (h₂ : t > 0)
-variable (h₃ : t < n)
+variable (tGt0 : t > 0)
+variable (tLtN : t < n)
 
 def all_vertices : Finset (Nat × ZMod n) := by
   exact (Finset.range n).image (fun i : Nat => ((0 : Nat), (i : ZMod n))) ∪
@@ -284,6 +284,21 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
     simp [uu, xx] at this
   have : 2 ≠ 0 := neq_2_0
   contradiction
+
+lemma uu_ne {tGt0 : t > 0} (i : ZMod n) : (u i) ≠ (u (i + t)) := by
+  intro h
+  simp [uu] at *
+  have h_val : (u i).val = (u (i + t)).val := by
+    exact congrArg Subtype.val h
+  have h_val_snd : (u i).val.snd = (u (i + t)).val.snd := by
+    rw [h_val]
+  simp [uu] at h_val_snd
+  have t_positive : t > 0 := tGt0
+  have t_ne_zero : (t : ZMod n) ≠ (0 : ZMod n) := by
+    intro h
+    sorry
+  sorry
+
 
 lemma xx_ne (i : ZMod n) : (x i) ≠ (x (i + 1)) := by
   intro h
@@ -715,6 +730,69 @@ def walk_X (i : ZMod (n / 2)) :
     _ = (2 * (i.val : ZMod n) + 2 * 1) := by simp
     _ = (2 * ((i.val : ZMod n) + 1)) := by rw [mul_add]
 
+lemma xu_ne_general (i j : ZMod n) : (x i) ≠ (u j) := by
+  intro h; simp [xx, uu] at h
+  have h_val : (x i).val = (u j).val := congrArg Subtype.val h
+  have h_fst : (x i).val.fst = (u j).val.fst := congrArg Prod.fst h_val
+  simp [xx, uu] at h_fst
+lemma ux_ne_general (i j : ZMod n) : (u i) ≠ (x j) := by
+intro h;
+apply xu_ne_general n nGt1 j i
+exact h.symm
+lemma xv_ne_general (i j : ZMod n) : (x i) ≠ (v j) := by
+  intro h; simp [xx, vv] at h
+  have h_val : (x i).val = (v j).val := congrArg Subtype.val h
+  have h_fst : (x i).val.fst = (v j).val.fst := congrArg Prod.fst h_val
+  simp [xx, vv] at h_fst
+lemma vx_ne_general (i j : ZMod n) : (v i) ≠ (x j) := by
+  intro h;
+  apply xv_ne_general n nGt1 j i
+  exact h.symm
+lemma xy_ne_general (i j : ZMod n) : (x i) ≠ (y j) := by
+  intro h; simp [xx, yy] at h
+  have h_val : (x i).val = (y j).val := congrArg Subtype.val h
+  have h_fst : (x i).val.fst = (y j).val.fst := congrArg Prod.fst h_val
+  simp [xx, yy] at h_fst
+lemma yx_ne_general (i j : ZMod n) : (y i) ≠ (x j) := by
+  intro h;
+  apply xy_ne_general n nGt1 j i
+  exact h.symm
+lemma uv_ne_general (i j : ZMod n) : (u i) ≠ (v j) := by
+  intro h; simp [uu, vv] at h
+  have h_val : (u i).val = (v j).val := congrArg Subtype.val h
+  have h_fst : (u i).val.fst = (v j).val.fst := congrArg Prod.fst h_val
+  simp [uu, vv] at h_fst
+lemma vu_ne_general (i j : ZMod n) : (v i) ≠ (u j) := by
+  intro h;
+  apply uv_ne_general n nGt1 j i
+  exact h.symm
+lemma uy_ne_general (i j : ZMod n) : (u i) ≠ (y j) := by
+  intro h; simp [uu, yy] at h
+  have h_val : (u i).val = (y j).val := congrArg Subtype.val h
+  have h_fst : (u i).val.fst = (y j).val.fst := congrArg Prod.fst h_val
+  simp [uu, yy] at h_fst
+lemma yu_ne_general (i j : ZMod n) : (y i) ≠ (u j) := by
+  intro h;
+  apply uy_ne_general n nGt1 j i
+  exact h.symm
+lemma vy_ne_general (i j : ZMod n) : (v i) ≠ (y j) := by
+  intro h; simp [vv, yy] at h
+  have h_val : (v i).val = (y j).val := congrArg Subtype.val h
+  have h_fst : (v i).val.fst = (y j).val.fst := congrArg Prod.fst h_val
+  simp [vv, yy] at h_fst
+lemma yv_ne_general (i j : ZMod n) : (y i) ≠ (v j) := by
+  intro h;
+  apply vy_ne_general n nGt1 j i
+  exact h.symm
+
+-- 同じタイプでも異なるインデックスの非等価性
+lemma xx_ne_different (i j : ZMod n) (h : i ≠ j) : (x i) ≠ (x j) := by
+  intro h_eq
+  have h_snd : i = j := by
+    have h_val : (x i).val = (x j).val := congrArg Subtype.val h_eq
+    have h_snd : (x i).val.snd = (x j).val.snd := congrArg Prod.snd h_val
+    simp [xx] at h_snd; exact h_snd
+  exact h h_snd
 lemma xu_diff_ne (i j : ZMod n) : (x i) ≠ (u j) := by
   intro h
   simp [xx, uu] at h
@@ -725,6 +803,34 @@ lemma xu_diff_ne (i j : ZMod n) : (x i) ≠ (u j) := by
     rw [h_val]
   simp [xx, uu] at h_fst
   -- h_fst : 0 = 2 となるが、これは矛盾（自動的に解決される）
+
+theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
+  --simp [SimpleGraph.Walk.support_cons, SimpleGraph.Walk.support_nil, walk_X, xx, yy, uu, vv]
+  simp [
+    SimpleGraph.Walk.support_cons,
+    SimpleGraph.Walk.support_nil,
+    walk_X,
+    xu_ne_general,
+    ux_ne_general,
+    xv_ne_general,
+    vx_ne_general,
+    xy_ne_general,
+    yx_ne_general,
+    uv_ne_general,
+    vu_ne_general,
+    uy_ne_general,
+    yu_ne_general,
+    vy_ne_general,
+    yv_ne_general,
+    yy_ne,
+    xx_ne,
+    ]
+  repeat constructor
+  · sorry
+  · sorry
+  · sorry
+  · sorry
+  · sorry
 
 -- 3頂点 x i, x (i + 1), u (i + 1) からなるpath
 def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :=
