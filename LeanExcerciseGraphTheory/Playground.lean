@@ -689,6 +689,32 @@ def vu_walk_r (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (v i) (u (i - t)) 
 def walk_xxu (i : ZMod n) : SimpleGraph.Walk (dgpg n t nGt1) (x i) (u (i + 1)):=
   SimpleGraph.Walk.append (xx_walk n t nGt1 i) (xu_walk n t nGt1 (i + 1))
 
+def walk_X (i : ZMod (n / 2)) :
+  SimpleGraph.Walk (dgpg n t nGt1) (u (2 * (i.val : ZMod n))) (x (2 * ((i.val : ZMod n) + 1))) :=
+  SimpleGraph.Walk.cons (ux_edge n t nGt1 (2 * (i.val : ZMod n))) <|
+  SimpleGraph.Walk.cons (xx_edge n t nGt1 (2 * (i.val : ZMod n))) <|
+  SimpleGraph.Walk.cons (xu_edge n t nGt1 ((2 * (i.val : ZMod n)) + 1)) <|
+  SimpleGraph.Walk.cons (uv_edge_r n t nGt1 ((2 * (i.val : ZMod n)) + 1)) <|
+  SimpleGraph.Walk.cons (vy_edge n t nGt1 ((2 * (i.val : ZMod n)) + 1 - t)) <|
+  SimpleGraph.Walk.cons (yy_edge n t nGt1 ((2 * (i.val : ZMod n)) + 1 - t)) <|
+  SimpleGraph.Walk.cons (yv_edge n t nGt1 ((2 * (i.val : ZMod n)) + 1 - t + 1)) <|
+  SimpleGraph.Walk.cons (vu_edge n t nGt1 ((2 * (i.val : ZMod n)) + 1 - t + 1)) <|
+  SimpleGraph.Walk.cons (simplify_eq ▸ ux_edge n t nGt1 (2 * ((i.val : ZMod n) + 1))) <|
+  SimpleGraph.Walk.nil
+  where
+    simplify_eq  : (2 * (i.val : ZMod n) + 1 - t + 1 + t) = 2 * ((i.val : ZMod n) + 1) := calc
+    2 * (i.val : ZMod n) + 1 - t + 1 + t
+    _ = 2 * (i.val : ZMod n) + 1 - t + t + 1 := by
+      rw [add_assoc]
+      simp +arith
+    _ = (2 * (i.val : ZMod n) + 1 + 1) := by simp +arith
+    _ = (2 * (i.val : ZMod n) + 2) := by
+      rw [add_assoc]
+      simp +arith
+      norm_num
+    _ = (2 * (i.val : ZMod n) + 2 * 1) := by simp
+    _ = (2 * ((i.val : ZMod n) + 1)) := by rw [mul_add]
+
 lemma xu_diff_ne (i j : ZMod n) : (x i) ≠ (u j) := by
   intro h
   simp [xx, uu] at h
@@ -717,6 +743,6 @@ def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
   by_cases nIsEven : n % 2 = 0
-  . exact dgpg_is_hamiltonian_even n t nGt1 nIsEven
+  · exact dgpg_is_hamiltonian_even n t nGt1 nIsEven
   -- Hamiltonian cycle の構成と証明をここに記述
   sorry
