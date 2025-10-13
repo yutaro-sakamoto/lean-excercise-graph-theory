@@ -285,21 +285,46 @@ lemma u0x0_ne : (u 0) ≠ (x 0) := by
   have : 2 ≠ 0 := neq_2_0
   contradiction
 
-lemma uu_ne {tGt0 : t > 0} (i : ZMod n) : (u i) ≠ (u (i + t)) := by
+lemma uu_ne {tGt0 : t > 0} {tLtN : t < n} (i : ZMod n) : (u i) ≠ (u (i + t)) := by
   intro h
-  simp [uu] at *
-  have h_val : (u i).val = (u (i + t)).val := by
+  -- uu の定義から、(u i).val = (2, i) かつ (u (i + t)).val = (2, i + t)
+  have h_val_eq : (u i).val = (u (i + t)).val := by
     exact congrArg Subtype.val h
-  have h_val_snd : (u i).val.snd = (u (i + t)).val.snd := by
-    rw [h_val]
-  simp [uu] at h_val_snd
-  have t_positive : t > 0 := tGt0
-  have t_ne_zero : (t : ZMod n) ≠ (0 : ZMod n) := by
-    intro h
-    sorry
-  sorry
-
-
+  -- 第二成分を比較すると i = i + t
+  have h_snd_eq : i = i + (t : ZMod n) := by
+    have h_i : (u i).val.snd = i := by simp [uu]
+    have h_it : (u (i + t)).val.snd = i + (t : ZMod n) := by simp [uu]
+    have h_snd_val : (u i).val.snd = (u (i + t)).val.snd := by
+      rw [h_val_eq]
+    rw [h_i, h_it] at h_snd_val
+    exact h_snd_val
+  -- これから (t : ZMod n) = 0 が導かれる
+  have h_t_eq_zero : (t : ZMod n) = 0 := by
+    have h_cancel : (t : ZMod n) = 0 := by
+      have h_rw : i + (t : ZMod n) = i + 0 := by
+        rw [← h_snd_eq]
+        simp
+      exact add_left_cancel h_rw
+    exact h_cancel
+  -- しかし t > 0 かつ t < n なので (t : ZMod n) ≠ 0
+  have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+  have : NeZero n := ⟨n_ne_zero⟩
+  have h_t_ne_zero : (t : ZMod n) ≠ 0 := by
+    intro h_contra
+    -- より直接的な方法：CharP を使わずに基本的な性質を使う
+    -- (t : ZMod n) = 0 ということは、t ≡ 0 (mod n)
+    -- つまり n | t だが、0 < t < n なので矛盾
+    have h_t_mod_zero : t % n = 0 := by
+      -- (t : ZMod n) = 0 なら、t % n = 0
+      have h_val_eq_zero : (t : ZMod n).val = (0 : ZMod n).val := by
+        rw [h_contra]
+      simp [ZMod.val_zero] at h_val_eq_zero
+      exact h_val_eq_zero
+    have h_t_mod_eq_t : t % n = t := Nat.mod_eq_of_lt tLtN
+    rw [h_t_mod_eq_t] at h_t_mod_zero
+    exact Nat.ne_of_gt tGt0 h_t_mod_zero
+  -- Contradiction
+  exact h_t_ne_zero h_t_eq_zero
 lemma xx_ne (i : ZMod n) : (x i) ≠ (x (i + 1)) := by
   intro h
   -- xx の定義から第二成分の等価性を得る
@@ -831,6 +856,7 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
   · sorry
   · sorry
   · sorry
+
 
 -- 3頂点 x i, x (i + 1), u (i + 1) からなるpath
 def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :=
