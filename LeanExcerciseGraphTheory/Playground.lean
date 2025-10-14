@@ -835,20 +835,10 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
     SimpleGraph.Walk.support_cons,
     SimpleGraph.Walk.support_nil,
     walk_X,
-    xu_ne_general,
-    ux_ne_general,
-    xv_ne_general,
-    vx_ne_general,
-    xy_ne_general,
-    yx_ne_general,
-    uv_ne_general,
-    vu_ne_general,
-    uy_ne_general,
-    yu_ne_general,
-    vy_ne_general,
-    yv_ne_general,
-    yy_ne,
-    xx_ne,
+    vv,
+    xx,
+    yy,
+    uu,
     ]
   repeat constructor
   · sorry
@@ -856,7 +846,10 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
   · sorry
   · sorry
   · sorry
-
+  · sorry
+  · sorry
+  · sorry
+  · sorry
 
 -- 3頂点 x i, x (i + 1), u (i + 1) からなるpath
 def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :=
