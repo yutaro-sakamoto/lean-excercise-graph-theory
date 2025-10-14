@@ -841,7 +841,8 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
     uu,
     ]
   repeat constructor
-  · sorry
+  · intro h
+    sorry
   · sorry
   · sorry
   · sorry
