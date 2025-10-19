@@ -842,14 +842,18 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
     ]
   repeat constructor
   · intro h
-    -- h は subtypeの等式だが、これは始点と終点の等価性
-    -- 始点: u (2 * i.val) = ⟨(2, 2 * i.val), ...⟩
-    -- 終点: x (2 * (i.val + 1)) = ⟨(0, 2 * (i.val + 1)), ...⟩
-    -- 第一成分が 2 ≠ 0 なので矛盾
     have h_val := congrArg Subtype.val h
     have h_fst := congrArg Prod.fst h_val
     simp at h_fst
-  · sorry
+  · constructor
+    · intro h
+      have h_val := congrArg Subtype.val h
+      have h_fst := congrArg Prod.fst h_val
+      simp at h_fst
+    · intro h
+      have h_val := congrArg Subtype.val h
+      have h_fst := congrArg Prod.fst h_val
+      simp at h_fst
   · sorry
   · sorry
   · sorry
