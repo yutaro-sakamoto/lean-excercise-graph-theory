@@ -854,8 +854,45 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
       have h_val := congrArg Subtype.val h
       have h_fst := congrArg Prod.fst h_val
       simp at h_fst
-  · sorry
-  · sorry
+  · constructor
+    · intro h
+      have h_val := congrArg Subtype.val h
+      have h_fst := congrArg Prod.fst h_val
+      simp at h_fst
+    · constructor
+      · intro h
+        have h_val := congrArg Subtype.val h
+        have h_fst := congrArg Prod.fst h_val
+        simp at h_fst
+      · intro h
+        have h_val := congrArg Subtype.val h
+        have h_fst := congrArg Prod.fst h_val
+        simp at h_fst
+  · constructor
+    · intro h
+      have h_val := congrArg Subtype.val h
+      have h_snd := congrArg Prod.snd h_val
+      simp at h_snd
+      have one_neq_zero : (1 : ZMod n) ≠ 0 := by
+        intro h_contra
+        have n_ne_zero : n ≠ 0 := n_neq_zero n nGt1
+        have : NeZero n := ⟨n_ne_zero⟩
+        exact absurd_one_eq_zero n nGt1 h_contra
+      exact one_neq_zero h_snd
+    · constructor
+      · intro h
+        have h_val := congrArg Subtype.val h
+        have h_fst := congrArg Prod.fst h_val
+        simp at h_fst
+      · constructor
+        · intro h
+          have h_val := congrArg Subtype.val h
+          have h_fst := congrArg Prod.fst h_val
+          simp at h_fst
+        · intro h
+          have h_val := congrArg Subtype.val h
+          have h_fst := congrArg Prod.fst h_val
+          simp at h_fst
   · sorry
   · sorry
   · sorry
