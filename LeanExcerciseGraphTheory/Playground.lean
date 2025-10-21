@@ -855,6 +855,33 @@ lemma neq_2i_2_i_plus_1 (nGt2 : n > 2) (i : ZMod n) : 2 * i ≠ 2 * (i + 1) := b
   rw [two_val, zero_val] at val_eq
   exact absurd val_eq (by norm_num)
 
+lemma neq_2i_plus_1_2_i_plus_1 (nGt2 : n > 2) (i : ZMod n) : 2 * i + 1 ≠ 2 * (i + 1) := by
+  intro h
+  -- Expand 2 * (i + 1) to get 2 * i + 2
+  have h_expanded : 2 * i + 1 = 2 * i + 2 := by
+    rw [h, mul_add, mul_one]
+  -- This gives us 1 = 2 in ZMod n
+  have one_eq_two : (1 : ZMod n) = 2 := by
+    have : 2 * i + 1 - 2 * i = 2 * i + 2 - 2 * i := by rw [h_expanded]
+    simp at this
+    exact this
+  -- But 1 ≠ 2 when n > 2, which we can prove using the same technique as neq_2i_2_i_plus_1
+  have one_ne_two : (1 : ZMod n) ≠ 2 := by
+    intro h_contra
+    -- If 1 = 2 in ZMod n, then 1 - 1 = 2 - 1, so 0 = 1
+    have h_zero_eq_one : (0 : ZMod n) = 1 := by
+      have : (1 : ZMod n) - 1 = 2 - 1 := by rw [h_contra]
+      simp at this
+      have h_eq : (2 : ZMod n) - 1 = 1 := by norm_cast; norm_num
+      rw [h_eq] at this
+      have : (0 : ZMod n) = 1 := this
+      exact this
+    -- Since n > 2, we have n > 1, and we can use absurd_one_eq_zero
+    have n_gt_1 : n > 1 := by omega
+    have : (1 : ZMod n) ≠ 0 := absurd_one_eq_zero n n_gt_1
+    exact this h_zero_eq_one.symm
+  exact one_ne_two one_eq_two
+
 theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
   --simp [SimpleGraph.Walk.support_cons, SimpleGraph.Walk.support_nil, walk_X, xx, yy, uu, vv]
   simp [
@@ -1012,7 +1039,8 @@ theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPat
               · intro h
                 have h_val := congrArg Subtype.val h
                 have h_snd := congrArg Prod.snd h_val
-                sorry
+                simp at h_snd
+                exact neq_2i_plus_1_2_i_plus_1 n nGt2 ↑i.val h_snd
   · constructor
     · intro h
       have h_val := congrArg Subtype.val h
