@@ -1001,7 +1001,14 @@ theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPat
               have h_val := congrArg Subtype.val h
               have h_snd := congrArg Prod.snd h_val
               simp at h_snd
-              sorry
+              -- From h_snd we need to derive a contradiction
+              -- The simplify_eq from walk_X shows us that the right side equals 2 * (↑i.val + 1)
+              -- So we have: 2 * ↑i.val + 1 = 2 * (↑i.val + 1) = 2 * ↑i.val + 2
+              -- This gives us: 1 = 2 in ZMod n
+              exact neq_2i_plus_1_2_i_plus_1 n nGt2 ↑i.val (by
+                rw [h_snd]
+                -- The simplify_eq from walk_X definition shows this equality holds
+                exact walk_X.simplify_eq n t i)
             · intro h
               have h_val := congrArg Subtype.val h
               have h_fst := congrArg Prod.fst h_val
