@@ -829,7 +829,33 @@ lemma xu_diff_ne (i j : ZMod n) : (x i) ≠ (u j) := by
   simp [xx, uu] at h_fst
   -- h_fst : 0 = 2 となるが、これは矛盾（自動的に解決される）
 
-theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
+lemma neq_2i_2_i_plus_1 (nGt2 : n > 2) (i : ZMod n) : 2 * i ≠ 2 * (i + 1) := by
+  intro h
+  have zero_eq_two : (0 : ZMod n) = (2 : ZMod n) := calc
+    0 = 2 * i - 2 * i := by rw [sub_self]
+    _ = 2 * (i + 1) - 2 * i := by simp [h]
+    _ = 2 * i + 2 * 1 - 2 * i := by rw [mul_add, mul_one]
+    _ = 2 * 1 := by simp
+    _ = 2 := by simp
+  -- We have 0 = 2 in ZMod n, which gives us 2 = 0
+  have two_eq_zero : (2 : ZMod n) = 0 := zero_eq_two.symm
+  -- Since n > 2, we have n ≥ 3, so 2 < n
+  -- This means 2 should not be 0 in ZMod n
+  have n_pos : 0 < n := by omega
+  have two_lt_n : 2 < n := by omega
+  -- In ZMod n, if 0 ≤ k < n, then (k : ZMod n) has value k
+  have two_val : (2 : ZMod n).val = 2 := by
+    exact ZMod.val_cast_of_lt two_lt_n
+  have zero_val : (0 : ZMod n).val = 0 := by
+    exact ZMod.val_zero
+  -- If 2 = 0 in ZMod n, then their values must be equal
+  have val_eq : (2 : ZMod n).val = (0 : ZMod n).val := by
+    rw [two_eq_zero]
+  -- But this gives 2 = 0 in Nat, which is false
+  rw [two_val, zero_val] at val_eq
+  exact absurd val_eq (by norm_num)
+
+theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
   --simp [SimpleGraph.Walk.support_cons, SimpleGraph.Walk.support_nil, walk_X, xx, yy, uu, vv]
   simp [
     SimpleGraph.Walk.support_cons,
@@ -1032,7 +1058,7 @@ theorem walk_X_is_path (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t n
                   have h_val := congrArg Subtype.val h
                   have h_snd := congrArg Prod.snd h_val
                   simp at h_snd
-                  sorry
+                  exact neq_2i_2_i_plus_1 n nGt2 ↑i.val h_snd
   · constructor
     · intro h
       have h_val := congrArg Subtype.val h
