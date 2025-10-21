@@ -882,7 +882,8 @@ lemma neq_2i_plus_1_2_i_plus_1 (nGt2 : n > 2) (i : ZMod n) : 2 * i + 1 ≠ 2 * (
     exact this h_zero_eq_one.symm
   exact one_ne_two one_eq_two
 
-theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
+theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2))
+  : SimpleGraph.Walk.IsPath (walk_X n t nGt1 i) := by
   --simp [SimpleGraph.Walk.support_cons, SimpleGraph.Walk.support_nil, walk_X, xx, yy, uu, vv]
   simp [
     SimpleGraph.Walk.support_cons,
@@ -1140,7 +1141,10 @@ theorem walk_X_is_path (nGt2 : n > 2) (i : ZMod (n / 2)): SimpleGraph.Walk.IsPat
                     have h_val := congrArg Subtype.val h
                     have h_snd := congrArg Prod.snd h_val
                     simp at h_snd
-                    sorry
+                    exact neq_2i_2_i_plus_1 n nGt2 ↑i.val (by
+                      rw [h_snd]
+                      -- The simplify_eq from walk_X definition shows this equality holds
+                      exact walk_X.simplify_eq n t i)
                   · intro h
                     have h_val := congrArg Subtype.val h
                     have h_fst := congrArg Prod.fst h_val
