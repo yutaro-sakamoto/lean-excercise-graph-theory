@@ -1163,6 +1163,11 @@ def path_xxu (i : ZMod n) : SimpleGraph.Path (dgpg n t nGt1) (x i) (u (i + 1)) :
     · exact xx_ne n nGt1 i
     · exact xu_diff_ne n nGt1 i (i + 1)⟩
 
+-- walk_Xを使ったPath型の定数宣言
+def path_X (nGt2 : n > 2) (i : ZMod (n / 2)) :
+  SimpleGraph.Path (dgpg n t nGt1) (u (2 * (i.val : ZMod n))) (x (2 * ((i.val : ZMod n) + 1))) :=
+  ⟨walk_X n t nGt1 i, walk_X_is_path n t nGt1 nGt2 i⟩
+
 --Hamiltonian サイクルに関する定理（コメントアウト）
 theorem dgpg_is_hamiltonian :
   SimpleGraph.IsHamiltonian (dgpg n t nGt1) := by
