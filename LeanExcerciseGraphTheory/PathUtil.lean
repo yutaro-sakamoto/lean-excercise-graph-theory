@@ -1,6 +1,7 @@
 
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Paths
+import Mathlib.Combinatorics.SimpleGraph.Walk
 
 -- SimpleGraphにおけるPath連結の方法の説明とデモ
 /-
@@ -34,7 +35,10 @@ def concat_walks (p1 : SimpleGraph.Path G a b) (p2 : SimpleGraph.Path G b c) :
 -- （実際の条件はより複雑だが、概念を示す）
 lemma concat_paths_when_disjoint (p1 : SimpleGraph.Path G a b) (p2 : SimpleGraph.Path G b c)
   (h : List.Disjoint p1.val.support.tail p2.val.support.dropLast) :
-  (p1.val.append p2.val).IsPath := sorry
+  (p1.val.append p2.val).IsPath := by
+  constructor
+  · sorry
+  . sorry
 
 -- 条件を満たす場合のPath構築
 def safe_concat_paths (p1 : SimpleGraph.Path G a b) (p2 : SimpleGraph.Path G b c)
